@@ -1,0 +1,9 @@
+~~                                                                                                                                 ~~
+**{!game_chronos}**
+
+{#opening-quote}
+
+The game has started. There {+is|alive} __{!alive}__ player{+s|alive} alive.
+{;day_vote_message}
+{@player}
+~~                                                                                                                                 ~~

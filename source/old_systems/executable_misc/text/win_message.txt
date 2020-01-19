@@ -1,0 +1,5 @@
+:star: Your win condition has been __fulfilled__.
+
+:star: **You have won.**
+
+{@player}

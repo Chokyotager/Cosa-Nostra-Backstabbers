@@ -1,0 +1,5 @@
+**{!game_chronos} TRIAL VOTE COUNT**
+
+{;public_votes}
+
+{;vote_configurations}

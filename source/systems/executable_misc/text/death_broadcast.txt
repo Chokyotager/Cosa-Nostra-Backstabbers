@@ -1,0 +1,3 @@
+**{;player}** was {;reason}.
+They had the role of __{;role}__.
+{;will_message}

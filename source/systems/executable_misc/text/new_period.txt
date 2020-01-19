@@ -1,0 +1,11 @@
+~~                                                                                                                                 ~~
+{@player}
+
+It is now {!cycle}. There {+is|alive} __{!alive}__ player{+s|alive} alive.
+
+A summary of __{!game_chronos_last}__'s events:
+
+{;summary}
+{;day_vote_message}
+**{!game_chronos}**
+~~                                                                                                                                 ~~

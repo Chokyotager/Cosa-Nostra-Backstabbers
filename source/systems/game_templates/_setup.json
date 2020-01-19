@@ -1,0 +1,86 @@
+{
+
+  "time": {
+    "day": 10,
+    "night": 0.2
+  },
+
+  "game": {
+
+    "mafia": {
+      "has-chat": true,
+      "chat-name": "mafia",
+      "night-only": true
+    },
+
+    "town": {
+      "night-chat": false
+    },
+
+    "day-zero": true,
+    "lynch-ratio-floored": 0,
+
+    "lynch": {
+      "top-voted-lynch": false,
+      "top-voted-lynch-minimum-votes": 0,
+
+      "tied-random": false,
+
+      "allow-hammer": true,
+      "no-lynch-option": true
+    },
+
+    "minimum-lynch-votes": 2,
+    "minimum-nolynch-votes": 2,
+    "minimum-trials": 1,
+
+    "allow-pre-emptive-votes": false,
+
+    "fast-forwarding": {
+      "allow": true,
+      "ratio": 1,
+
+      "night": true,
+      "day": true
+    },
+
+    "last-wills": {
+      "allow": false,
+      "character-count-limit": 200
+    },
+
+    "whispers": {
+      "allow": false,
+
+      "night": false,
+      "day": true,
+
+      "broadcast": true,
+
+      "allow-dead": false
+    },
+
+    "cause-of-death": {
+      "hide-day": false,
+      "hide-night": true,
+      "exceptions": ["modkill"]
+    }
+
+  },
+
+  "messages": {
+
+    "mafia": "**This is the Mafia Chat.**\n\nThis channel is only open at night for members of the Mafia to communicate.",
+
+    "opening-quote": "Truth may burn through lies and sorrow;\nfor one truth outnumbers innumerable lies.",
+    "daytime-quote": "**It is now daytime. The trial has now begun.**",
+    "nighttime-quote": "**Night has descended. Remember to use your night actions if you intend to!**",
+    "no-summary": "*Nothing of interest happened.*",
+
+    "singular-lynch": ":skull_crossbones: The players put {;player} on a noose. They have been lynched.",
+    "plural-lynch": ":skull_crossbones: The players put {;players} on a noose. They have been lynched.",
+    "abstain-lynch": "**The Town has abstained on lynches for the day.**"
+
+  }
+
+}

@@ -1,0 +1,6 @@
+~~                                                                                                                                 ~~
+**GAME PRIMED**    [Default rolelist]
+
+{;players}
+
+The game will start once all players have been assigned their roles.

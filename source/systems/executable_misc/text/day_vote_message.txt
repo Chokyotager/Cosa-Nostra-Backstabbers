@@ -1,0 +1,4 @@
+Lynch a player using `!v <player>`.
+To no-lynch, use the command `!abstain`.
+
+__3__ votes are required to lynch and __3__ votes are required to no-lynch.

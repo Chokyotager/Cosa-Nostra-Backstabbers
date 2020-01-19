@@ -1,0 +1,6 @@
+**{!game_chronos} TRIAL**
+
+{;public_votes}
+
+{;vote_configurations}
+The vote has ended. Refer to {#log} for the outcomes of the vote.
