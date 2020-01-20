@@ -1,4 +1,4 @@
-var var roles = {
+var roles = {
   "4": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso"],
   "5": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso", "mafioso"],
   "6": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso", "mafioso", "social_engineer"],
