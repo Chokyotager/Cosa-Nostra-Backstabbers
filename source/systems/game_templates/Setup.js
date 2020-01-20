@@ -1,23 +1,47 @@
 var fs = require("fs");
 var auxils = require("../auxils.js");
+var setups = require("../setups.js");
 
-var def = JSON.parse(fs.readFileSync(__dirname + "/_setup.json"));
+var default_config = JSON.parse(fs.readFileSync(__dirname + "/../../setups/default_config.json"));
 
 module.exports = class {
 
-  constructor () {
+  constructor (setup="default") {
 
-    this.setup = def;
+    this.setup = setups[setup];
 
   }
 
-  evaluate () {
+  setSetup (setup) {
 
-    this.setup["playing"] = {roles: ["vanilla_townie", "vanilla_townie", "vanilla_townie", "arsonist", "sheriff", "mafioso"]};
+    this.setup = setups[setup];
 
-    this.setup["playing"]["roles"] = auxils.cryptographicShuffle(this.setup["playing"]["roles"]);
+  };
 
-    return this.setup;
+  getAvailableSetups () {
+
+    return Object.keys(setups);
+
+  }
+
+  evaluate (players) {
+
+    // Check compatibility
+    if (this.setup.PLAYER_LIMITS[0] > players.length || this.setup.PLAYER_LIMITS[1] < players.length) {
+      return null;
+    };
+
+    var [roles, game_parameters] = this.setup(players);
+
+    // Load in roles, cryptographically shuffle
+
+    if (!game_parameters.playing) {
+      game_parameters.playing = new Object();
+    };
+
+    game_parameters.playing.roles = auxils.cryptographicShuffle(roles);
+
+    return auxils.objectOverride(default_config, game_parameters);
 
   }
 

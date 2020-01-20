@@ -14,7 +14,7 @@ module.exports = async function (game) {
       };
 
       if (mafia[i].isAlive()) {
-        await channel.overwritePermissions(member, {"SEND_MESSAGES": false});
+        await channel.overwritePermissions(member, {"SEND_MESSAGES": false, "READ_MESSAGES": true});
       };
     };
 

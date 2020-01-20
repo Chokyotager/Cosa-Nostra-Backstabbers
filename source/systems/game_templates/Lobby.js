@@ -51,7 +51,7 @@ module.exports = class {
 
     if (is_voting) {
 
-      return this.vote_start.length - required;
+      return required - this.vote_start.length + 1;
 
     };
 
@@ -65,14 +65,20 @@ module.exports = class {
 
     };
 
-    return this.vote_start.length - required;
+    return required - this.vote_start.length + 1;
 
   }
 
   start () {
 
+    var setup = this.setup.evaluate(this.players);
+
+    if (!setup) {
+      return null;
+    };
+
     // Run standard setup determination, etc.
-    process.game = new Game(this.client, this.config, this.players, this.setup.evaluate());
+    process.game = new Game(this.client, this.config, this.players, setup);
     delete process.lobby;
 
   }

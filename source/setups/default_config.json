@@ -1,7 +1,7 @@
 {
 
   "time": {
-    "day": 3,
+    "day": 10,
     "night": 1
   },
 
@@ -70,18 +70,8 @@
 
   "messages": {
 
-    "mafia": "**This is the Mafia Chat.**\n\nThis channel is only open at night for members of the Mafia to communicate.",
-
     "opening-quote": "Truth may burn through lies and sorrow;\nfor one truth outnumbers innumerable lies.",
-    "daytime-quote": "**It is now daytime. The trial has now begun.**",
-    "nighttime-quote": "**Night has descended. Remember to use your night actions if you intend to!**",
-    "no-summary": "*Nothing of interest happened.*",
-
-    "game-over": "**GAME OVER**",
-
-    "singular-lynch": ":skull_crossbones: The players put {;player} on a noose. They have been lynched.",
-    "plural-lynch": ":skull_crossbones: The players put {;players} on a noose. They have been lynched.",
-    "abstain-lynch": "**The Town has abstained on lynches for the day.**"
+    "no-summary": "*Nothing of interest happened.*"
 
   }
 

@@ -35,7 +35,7 @@ client.on("ready", function () {
 
 });
 
-client.on("message", function (message) {
+client.on("message", async function (message) {
 
   var content = message.content;
 
@@ -51,6 +51,20 @@ client.on("message", function (message) {
       if (config["disabled-commands"].includes(command)) {
         message.channel.send(":x: That command has been disabled in the configuration!");
         return null;
+      };
+
+      for (var key in commands) {
+
+        if (["admin", "game", "role"].includes(key)) {
+          continue;
+        };
+
+        if (commands[key][command] !== undefined) {
+          //logger.log(0, "User %s [%s#%s] executed %s-type command \"%s\".", member.id, member.user.username, member.user.discriminator, key, raw_command);
+          await commands[key][command](message, edited, config);
+          return null;
+        };
+
       };
 
       if (commands.unaffiliated[command] !== undefined) {

@@ -1204,7 +1204,7 @@ module.exports = class {
     executable.wins.checkWin(this);
   }
 
-  async endGame () {
+  endGame () {
 
     console.log("Game ended!");
 
@@ -1212,9 +1212,8 @@ module.exports = class {
     this.state = "ended";
 
     executable.misc.removeAllPlayerRoles(this.getGuild(), this.config);
-    await Promise.all([executable.misc.lockMainChats(), executable.misc.lockMafiaChat()]);
-
-    this.timer.updatePresence();
+    executable.misc.lockMainChats(this);
+    executable.misc.lockMafiaChat(this);
 
     // Remove the process
     delete process.game;
