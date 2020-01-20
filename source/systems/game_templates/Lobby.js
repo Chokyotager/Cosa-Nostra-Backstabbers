@@ -47,9 +47,17 @@ module.exports = class {
   voteStart (member) {
 
     var is_in_game = this.players.some(x => x.id !== member.id);
+    var is_voting = this.vote_start.some(x => x.id === member.id);
+
+    if (is_voting) {
+
+      return this.vote_start.length - required;
+
+    };
+
     this.vote_start.push(member);
 
-    var required = Math.floor(0.5 * this.players.length);
+    var required = Math.floor(0.35 * this.players.length);
     if (this.vote_start.length > required) {
 
       this.start();
@@ -57,7 +65,7 @@ module.exports = class {
 
     };
 
-    return 1;
+    return this.vote_start.length - required;
 
   }
 

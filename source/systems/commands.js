@@ -114,7 +114,7 @@ function propertyEnumerator (game, message, property) {
 
   var alive = player.status.alive;
 
-  var private_channel = message.channel.id === player.channel.id;
+  var private_channel = message.channel.type === "dm";
 
   var day = game.period % 2 === 0;
 

@@ -22,6 +22,7 @@ module.exports = class {
 
     this.votes = new Array();
 
+    this.channel = member.createDM();
     this.intro_messages = new Array();
 
     // 3x stats - game_stats, permanent_stats, role.stats

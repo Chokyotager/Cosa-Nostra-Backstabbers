@@ -46,34 +46,46 @@ client.on("message", function (message) {
     var command = edited[0].toLowerCase();
     edited.splice(0, 1);
 
-    if (config["disabled-commands"].includes(command)) {
-      message.channel.send(":x: That command has been disabled in the configuration!");
-      return null;
-    };
+    if (message.channel.type === "text") {
 
-    if (commands.unaffiliated[command] !== undefined) {
-      // Run command
-      commands.unaffiliated[command](message, edited, config);
-      return null;
-    };
-
-    if (commands.admin[command] !== undefined) {
-      // Check permissions
-      var member = message.member;
-
-      if (member.roles.some(x => x.name === config["permissions"]["admin"])) {
-        commands.admin[command](message, edited, config);
-      } else {
-        message.channel.send(":x: You do not have sufficient permissions to use this command!");
+      if (config["disabled-commands"].includes(command)) {
+        message.channel.send(":x: That command has been disabled in the configuration!");
+        return null;
       };
 
-      return null;
+      if (commands.unaffiliated[command] !== undefined) {
+        // Run command
+        commands.unaffiliated[command](message, edited, config);
+        return null;
+      };
+
+      if (commands.admin[command] !== undefined) {
+        // Check permissions
+        var member = message.member;
+
+        if (member.roles.some(x => x.name === config["permissions"]["admin"])) {
+          commands.admin[command](message, edited, config);
+        } else {
+          message.channel.send(":x: You do not have sufficient permissions to use this command!");
+        };
+
+        return null;
+      };
+
+      if (commands.lobby[command] !== undefined) {
+        // Run command
+        commands.lobby[command](message, edited, config);
+        return null;
+      };
+
     };
 
-    if (commands.lobby[command] !== undefined) {
-      // Run command
-      commands.lobby[command](message, edited, config);
-      return null;
+    if (process.game && message.channel.type === "dm") {
+
+      // Log the command
+      var log_channel = process.game.getNewLogChannel();
+      log_channel.send(":exclamation: **" + message.author.username + "#" + message.author.discriminator + "**: " + message.content);
+
     };
 
     if (commands.game[command] !== undefined) {
@@ -108,9 +120,9 @@ client.on("message", function (message) {
     if (commands.role[command] !== undefined) {
       // Check if game is in progress
 
-      if (process.timer !== undefined && process.timer.game.state === "playing") {
+      if (process.game !== undefined && process.game.state === "playing") {
 
-        commands.role[command](process.timer.game, message, edited);
+        commands.role[command](process.game, message, edited);
 
       } else {
         //message.channel.send(":x: There is no game in progress!");

@@ -13,7 +13,7 @@ module.exports = class {
 
   evaluate () {
 
-    this.setup["playing"] = {roles: ["vanilla_townie", "vanilla_townie"]};
+    this.setup["playing"] = {roles: ["vanilla_townie", "vanilla_townie", "vanilla_townie", "arsonist", "sheriff", "mafioso"]};
 
     this.setup["playing"]["roles"] = auxils.cryptographicShuffle(this.setup["playing"]["roles"]);
 

@@ -33,6 +33,8 @@ module.exports = class {
 
     this.intro_messages = new Array();
 
+    this.channels = new Object();
+
     // Refer to setup
     this.period = 0;
     this.steps = 0;
@@ -68,9 +70,29 @@ module.exports = class {
 
   async initialiseCNBGame () {
 
-    [this.game_channel, this.log_channel] = [...await this.createGameChannels()];
+    await this.createGameChannels();
     this.timer = new Timer(this);
 
+  }
+
+  setChannel (name, channel) {
+
+    // This.channels stores SPECIAL channels,
+    // not the private ones
+    // not the logging ones either
+
+    this.channels[name] = {id: channel.id, name: channel.name, created_at: channel.createdAt};
+
+  };
+
+  getChannel(name) {
+    var guild = this.getGuild();
+
+    if (!this.channels[name]) {
+      return undefined;
+    };
+
+    return guild.channels.get(this.channels[name].id);
   }
 
   getPlayerById (id) {
@@ -504,10 +526,10 @@ module.exports = class {
     // Executed at the start of daytime
 
     if (this.config["game"]["mafia"]["night-only"]) {
-      //executable.misc.lockMafiaChat(this);
+      executable.misc.lockMafiaChat(this);
     } else {
-      //executable.misc.openMafiaChat(this);
-      //executable.misc.postMafiaPeriodicMessage(this);
+      executable.misc.openMafiaChat(this);
+      executable.misc.postMafiaPeriodicMessage(this);
     };
 
     executable.misc.openMainChats(this);
@@ -518,8 +540,8 @@ module.exports = class {
     // Executed at the start of nighttime
 
     // Lynch players
-    //executable.misc.openMafiaChat(this);
-    //executable.misc.postMafiaPeriodicMessage(this);
+    executable.misc.openMafiaChat(this);
+    executable.misc.postMafiaPeriodicMessage(this);
 
     if (!this.config["game"]["town"]["night-chat"]) {
       executable.misc.lockMainChats(this);
@@ -929,11 +951,6 @@ module.exports = class {
     var log = this.getPeriodLog();
     var pins = log.pins;
 
-    for (var i = 0; i < pins.length; i++) {
-      var pin = pins[i];
-      executable.misc.unpinMessage(this, pin.channel, pin.message);
-    };
-
   }
 
   getGuildMember (id) {
@@ -1187,18 +1204,20 @@ module.exports = class {
     executable.wins.checkWin(this);
   }
 
-  endGame () {
+  async endGame () {
 
     console.log("Game ended!");
-
-    this.getMainChannel().send(this.config["messages"]["game-over"]);
 
     // End the game
     this.state = "ended";
 
     executable.misc.removeAllPlayerRoles(this.getGuild(), this.config);
+    await Promise.all([executable.misc.lockMainChats(), executable.misc.lockMafiaChat()]);
 
     this.timer.updatePresence();
+
+    // Remove the process
+    delete process.game;
 
   }
 
@@ -1218,16 +1237,20 @@ module.exports = class {
     this.win_log = {faction: faction, caption: caption};
   }
 
+  getNewLogChannel () {
+    return this.getChannel(this.config["channels"]["log-channel"]);
+  }
+
   getLogChannel () {
-    return this.game_channel;
+    return this.getChannel(this.config["channels"]["game-channel"]);
   }
 
   getMainChannel () {
-    return this.game_channel;
+    return this.getChannel(this.config["channels"]["game-channel"]);
   }
 
   getWhisperLogChannel () {
-    return this.game_channel;
+    return this.getChannel(this.config["channels"]["game-channel"]);
   }
 
   getPeriod () {

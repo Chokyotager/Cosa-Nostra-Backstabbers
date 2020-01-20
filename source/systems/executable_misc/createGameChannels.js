@@ -1,3 +1,5 @@
+var createPrivateChannel = require("./createPrivateChannel.js");
+
 module.exports = async function (game) {
 
   var config = game.config;
@@ -6,23 +8,39 @@ module.exports = async function (game) {
 
   var lobby_category = guild.channels.find(x => x.name === config["channels"]["category"]);
 
-  // Remove old channels
-  await deleteIfAvailable(config["channels"]["game-channel"]);
-  await deleteIfAvailable(config["channels"]["log-channel"]);
+  var player_role = guild.roles.find(x => x.name === config["permissions"]["player"]);
 
-  var game_channel = await guild.createChannel(config["channels"]["game-channel"], {type: "text", parent: lobby_category});
-  var log_channel = await guild.createChannel(config["channels"]["log-channel"], {type: "text", parent: lobby_category});
+  // Remove old channels in the category
+  var child_channels = lobby_category.children.array();
 
-  return [game_channel, log_channel];
+  var deletions = new Array();
 
-  async function deleteIfAvailable (channel_name) {
+  for (var i = 0; i < child_channels.length; i++) {
+    deletions.push(child_channels[i].delete());
+  };
 
-    var channels = lobby_category.children.filter(x => x.name === channel_name).array();
+  await Promise.all(deletions);
 
-    for (var i = 0; i < channels.length; i++) {
+  await createPrivateChannel(game, config["channels"]["game-channel"], {id: player_role.id, deny: ["SEND_MESSAGES"]});
+  await createPrivateChannel(game, config["channels"]["log-channel"], {id: player_role.id, deny: ["VIEW_CHANNEL"]});
 
-      await channels[i].delete();
+  // Create Mafia channel (if applicable)
+  if (config["game"]["mafia"]["has-chat"]) {
 
+    mafia_channel = await createPrivateChannel(game, config["game"]["mafia"]["chat-name"], {id: player_role.id, deny: ["VIEW_CHANNEL", "SEND_MESSAGES"]}, "mafia");
+
+    var mafia = game.findAll(x => x.see_mafia_chat === true);
+
+    for (var i = 0; i < mafia.length; i++) {
+
+      var member = mafia[i].getGuildMember();
+      if (!member) {
+        continue;
+      };
+
+      if (mafia[i].isAlive()) {
+        await mafia_channel.overwritePermissions(member, {"READ_MESSAGES": true});
+      };
     };
 
   };
