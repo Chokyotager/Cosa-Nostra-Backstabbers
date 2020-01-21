@@ -71,6 +71,7 @@ module.exports = class {
   async initialiseCNBGame () {
 
     await this.createGameChannels();
+    await executable.misc.lockLobby(this);
     this.timer = new Timer(this);
 
   }
@@ -85,7 +86,7 @@ module.exports = class {
 
   };
 
-  getChannel(name) {
+  getChannel (name) {
     var guild = this.getGuild();
 
     if (!this.channels[name]) {
@@ -1212,8 +1213,7 @@ module.exports = class {
     this.state = "ended";
 
     executable.misc.removeAllPlayerRoles(this.getGuild(), this.config);
-    executable.misc.lockMainChats(this);
-    executable.misc.lockMafiaChat(this);
+    executable.conclusion.openChats(this);
 
     // Remove the process
     delete process.game;

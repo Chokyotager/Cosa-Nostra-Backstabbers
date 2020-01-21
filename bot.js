@@ -2,6 +2,15 @@ var Discord = require("discord.js");
 var client = new Discord.Client();
 var fs = require("fs");
 
+process.resetStatus = async function (client) {
+
+  await client.user.setPresence({
+    status: "online",
+    game: {name: "Foxgloves Discord Mafia", type: "PLAYING"}
+  });
+
+};
+
 var lcn = require("./source/lcn.js");
 
 var auxils = lcn.auxils;
@@ -22,10 +31,7 @@ client.on("ready", function () {
   auxils.readline(client, config, commands);
   auxils.eventhandler(client, config);
 
-  client.user.setPresence({
-    status: "online",
-    game: {name: "Foxgloves Discord Mafia", type: "PLAYING"}
-  });
+  process.resetStatus(client);
 
   var save_status = "NONE ATTEMPTED";
 

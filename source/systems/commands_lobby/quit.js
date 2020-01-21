@@ -6,7 +6,8 @@ module.exports = async function (message, params, config) {
 
     if ((params[0] || new String()).toLowerCase() === "force") {
 
-      // WIP
+      game.modkill(message.author.id);
+      await message.channel.send(":exclamation: Left the game.");
       return null;
 
     };

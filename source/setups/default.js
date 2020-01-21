@@ -1,15 +1,14 @@
 var roles = {
-  "3": ["vanilla_townie", "vanilla_townie", "mafioso"],
-  "4": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "mafioso"],
+  "3": ["vanilla_townie", "doctor","mafioso"],
+  "4": ["vanilla_townie", "vanilla_townie", "doctor", "mafioso"],
   "5": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "mafioso"],
-  "6": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "mafioso", "godfather"],
-  "7": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "mafioso", "godfather"],
-  "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "mafioso", "mafioso", "godfather"],
-  "9": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "mafioso", "mafioso", "godfather"],
-  "10": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "mafioso", "mafioso", "godfather", "traitor"],
-  "11": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "mafioso", "mafioso", "godfather", "traitor"],
-  "12": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "escort", "doctor", "mafioso", "mafioso", "godfather", "traitor"],
-  "13": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "escort", "doctor", "mafioso", "mafioso", "mafioso", "godfather", "traitor"],
+  "6": ["vanilla_townie", "vanilla_townie", "sheriff", "jailkeeper", "mafioso", "mafioso"],
+  "7": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "mafioso"],
+  "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "mafioso"],
+  "9" :["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "mafioso"],
+  "10": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "escort", "consort", "mafioso", "serial_killer"],
+  "11": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "escort", "mafioso", "serial_killer"],
+  "12": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "tracker", "sheriff", "doctor", "escort", "consort", "consigliere", "mafioso", "serial_killer"]
 };
 
 module.exports = function (players) {

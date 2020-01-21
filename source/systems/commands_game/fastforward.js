@@ -33,13 +33,7 @@ module.exports = async function (game, message, params) {
     await message.channel.send(":x: Dead people may not vote to skip ahead with the time!");
     return null;
   };
-
-  // Check private channel
-  if (player.channel.id !== message.channel.id) {
-    await message.channel.send(":x: You cannot use that command here!");
-    return null;
-  };
-
+  
   // Put fast forward vote in the game
   var identifier = player.identifier;
   var fast_forwarded = game.votedFastForward(identifier);

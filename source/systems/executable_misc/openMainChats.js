@@ -8,7 +8,7 @@ module.exports = async function (game) {
 
   // Should only be set once
   var player = guild.roles.find(x => x.name === config["permissions"]["player"]);
-  var post_perms = {"SEND_MESSAGES": true};
+  var post_perms = {"SEND_MESSAGES": true, "EMBED_LINKS": false, "ATTACH_FILES": false};
 
   await setPermissions([game.getMainChannel()], player, post_perms);
 

@@ -29,6 +29,14 @@ module.exports = async function (message, params, config) {
   // Add
   votes_left = process.lobby.voteStart(member);
 
+  if (!votes_left) {
+
+    var setup = this.setup.setup;
+    await message.channel.send(":negative_squared_cross_mark: The setup **" + setup.NAME + "** can only load between **" + setup.PLAYER_LIMITS[0] + "** - **" + setup.PLAYER_LIMITS[1] +  "** players. Please change the gamemode using `!gm`.")
+    return null;
+
+  };
+
   if (votes_left < 1) {
 
     await message.channel.send(":white_check_mark: **" + member.displayName + "** has voted to start the game. **The game is starting**...");

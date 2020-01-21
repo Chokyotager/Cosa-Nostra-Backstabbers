@@ -12,6 +12,38 @@ module.exports = class {
 
   }
 
+  getSetups () {
+    return setups;
+  }
+
+  getSetup (identifier) {
+    return setups[identifier];
+  }
+
+  getSetupMatch (name) {
+
+    // Identify setup
+    var identifiers = Object.keys(setups);
+
+    var distances = new Array();
+
+    // Jaro-Winkler hybrid
+    for (var i = 0; i < identifiers.length; i++) {
+
+      var distance = auxils.hybridisedStringComparison(name, identifiers[i]);
+      distances.push(distance);
+
+    };
+
+    var best_match_index = distances.indexOf(Math.max(...distances));
+
+    var score = distances[best_match_index];
+    var setup = setups[identifiers[best_match_index]];
+
+    return {"score": score, "setup": setup, "identifier": identifiers[best_match_index]};
+
+  }
+
   setSetup (setup) {
 
     this.setup = setups[setup];

@@ -21,13 +21,13 @@ module.exports = async function (game) {
 
   await Promise.all(deletions);
 
-  await createPrivateChannel(game, config["channels"]["game-channel"], {id: player_role.id, deny: ["SEND_MESSAGES"]});
-  await createPrivateChannel(game, config["channels"]["log-channel"], {id: player_role.id, deny: ["VIEW_CHANNEL"]});
+  await createPrivateChannel(game, config["channels"]["game-channel"], [{id: guild.id, allow: ["READ_MESSAGES", "VIEW_CHANNEL"], deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}, {id: player_role.id, allow: ["READ_MESSAGES", "VIEW_CHANNEL"], deny: ["SEND_MESSAGES"]}]);
+  await createPrivateChannel(game, config["channels"]["log-channel"]);
 
   // Create Mafia channel (if applicable)
   if (config["game"]["mafia"]["has-chat"]) {
 
-    mafia_channel = await createPrivateChannel(game, config["game"]["mafia"]["chat-name"], {id: player_role.id, deny: ["VIEW_CHANNEL", "SEND_MESSAGES"]}, "mafia");
+    mafia_channel = await createPrivateChannel(game, config["game"]["mafia"]["chat-name"], [{id: player_role.id, deny: ["VIEW_CHANNEL", "SEND_MESSAGES"]}], "mafia");
 
     var mafia = game.findAll(x => x.see_mafia_chat === true);
 

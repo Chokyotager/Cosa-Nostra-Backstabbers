@@ -15,6 +15,6 @@ module.exports = function (players) {
 
 };
 
-module.exports.NAME = "Love is in the air";
+module.exports.NAME = "Love is in the Air";
 module.exports.INFO = "The default game.";
 module.exports.PLAYER_LIMITS = [3, 8];

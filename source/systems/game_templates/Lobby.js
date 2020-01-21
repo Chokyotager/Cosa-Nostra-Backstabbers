@@ -12,7 +12,56 @@ module.exports = class {
     this.players = new Array();
     this.vote_start = new Array();
 
+    this.setup_votes = new Object();
+
     this.setup = new Setup();
+
+  }
+
+  voteSetup (identifier, member) {
+
+    var keys = Object.keys(this.setup_votes);
+
+    for (var i = 0; i < keys.length; i++) {
+
+      this.setup_votes[keys[i]] = this.setup_votes[keys[i]].filter(x => x !== member.id);
+
+    };
+
+    if (!keys.includes(identifier)) {
+
+      this.setup_votes[identifier] = new Array();
+
+    };
+
+    this.setup_votes[identifier].push(member.id);
+
+    keys.push(identifier);
+
+    // Find the most voted setup
+
+    var vote_count = new Array();
+    for (var i = 0; i < keys.length; i++) {
+      vote_count.push(this.setup_votes[keys[i]].length);
+    };
+
+    var max_votes = Math.max(...vote_count);
+
+    if (this.setup_votes[identifier].length === max_votes) {
+      // Favour the latest vote
+      this.setup.setSetup(identifier);
+      return [this.setup_votes[identifier].length, identifier, this.setup_votes[identifier].length];
+    };
+
+    // Otherwise, find best
+    var best_identifier = keys[vote_count.indexOf(max_votes)];
+
+    this.setup.setSetup(best_identifier);
+    return [this.setup_votes[identifier].length, best_identifier, this.setup_votes[best_identifier].length];
+
+  };
+
+  resetSetupVotes () {
 
   }
 
@@ -28,6 +77,14 @@ module.exports = class {
   }
 
   leave (member) {
+
+    var keys = Object.keys(this.setup_votes);
+
+    for (var i = 0; i < keys.length; i++) {
+
+      this.setup_votes[keys[i]] = this.setup_votes[keys[i]].filter(x => x !== member.id);
+
+    };
 
     this.players = this.players.filter(x => x.id !== member.id);
 
@@ -49,6 +106,12 @@ module.exports = class {
     var is_in_game = this.players.some(x => x.id !== member.id);
     var is_voting = this.vote_start.some(x => x.id === member.id);
 
+    if (this.setup.setup.PLAYER_LIMITS[0] > this.players.length || this.setup.setup.PLAYER_LIMITS[1] < this.players.length) {
+      return null;
+    };
+
+    var required = Math.floor(0.35 * this.players.length);
+
     if (is_voting) {
 
       return required - this.vote_start.length + 1;
@@ -57,7 +120,6 @@ module.exports = class {
 
     this.vote_start.push(member);
 
-    var required = Math.floor(0.35 * this.players.length);
     if (this.vote_start.length > required) {
 
       this.start();

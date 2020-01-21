@@ -162,12 +162,7 @@ module.exports = class {
 
     } else {
 
-      var display = this.game.getFormattedDay() + ": game ended";
-
-      await this.game.setPresence({
-        status: "online",
-        game: {name: display, type: "PLAYING"}
-      });
+      await process.resetStatus(this.game.client);
 
     };
 
