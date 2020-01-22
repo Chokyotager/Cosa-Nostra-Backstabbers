@@ -1,6 +1,0 @@
-**{!game_chronos} TRIAL**
-
-{;public_votes}
-
-{;vote_configurations}
-*React on the corresponding alphabet below to vote.*

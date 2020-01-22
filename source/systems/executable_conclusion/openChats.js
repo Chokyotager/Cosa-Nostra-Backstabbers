@@ -13,13 +13,13 @@ module.exports = async function (game) {
 
   for (var i = 0; i < child_channels.length; i++) {
 
-    child_channels[i].replacePermissionOverwrites({overwrites: [{id: guild.id, allow: ["READ_MESSAGES", "VIEW_CHANNEL"], deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]});
+    await child_channels[i].replacePermissionOverwrites({overwrites: [{id: guild.id, allow: ["READ_MESSAGES", "VIEW_CHANNEL"], deny: ["SEND_MESSAGES", "ADD_REACTIONS"]}]});
 
   };
 
   var player_role = guild.roles.find(x => x.name === config["permissions"]["player"]);
   var lobby_channel = guild.channels.find(x => x.name === config["channels"]["lobby"]);
 
-  await lobby_channel.overwritePermissions(player_role, {"READ_MESSAGES": true});
+  await lobby_channel.overwritePermissions(guild.id, {"READ_MESSAGES": true});
 
 };

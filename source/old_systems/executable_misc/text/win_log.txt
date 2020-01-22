@@ -1,7 +1,0 @@
-~~                                ~~   **{;faction} WINS**   ~~                                ~~
-{;description}
-
-**ROLES**
-{;role_list}
-
-{@aftermath}

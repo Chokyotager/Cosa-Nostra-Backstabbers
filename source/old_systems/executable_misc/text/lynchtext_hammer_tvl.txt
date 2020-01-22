@@ -1,1 +1,0 @@
-The vote is executed once majority is reached. Otherwise, the option with the most votes is executed at the end of the day.

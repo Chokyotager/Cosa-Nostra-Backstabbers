@@ -41,7 +41,7 @@ module.exports = async function (message, params, config) {
 
   if (process.lobby.players.length === 0) {
 
-    delete process.lobby;
+    process.lobby.destroy();
 
   };
 

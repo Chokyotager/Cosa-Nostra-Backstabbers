@@ -1,1 +1,0 @@
-Lynches for today: __{!trials_left}__.

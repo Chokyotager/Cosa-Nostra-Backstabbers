@@ -16,6 +16,8 @@ module.exports = class {
 
     this.setup = new Setup();
 
+    this.createTimeout();
+
   }
 
   voteSetup (identifier, member) {
@@ -131,6 +133,24 @@ module.exports = class {
 
   }
 
+  createTimeout () {
+
+    var timeout_time = this.config["timeout"];
+    var lobby = this;
+
+    this.timeout = setTimeout(async function () {
+
+      var config = lobby.config;
+
+      var lobby_channel = lobby.guild.channels.find(x => x.name === config["channels"]["lobby"]);
+      lobby_channel.send(":negative_squared_cross_mark: The game took too long to start and has been cancelled. Please use `" + config["command-prefix"] + "join` to start a new game.");
+
+      lobby.destroy();
+
+    }, timeout_time * 60 * 1000);
+
+  }
+
   start () {
 
     var setup = this.setup.evaluate(this.players);
@@ -138,6 +158,8 @@ module.exports = class {
     if (!setup) {
       return null;
     };
+
+    clearTimeout(this.timeout);
 
     // Run standard setup determination, etc.
     process.game = new Game(this.client, this.config, this.players, setup);
@@ -147,6 +169,9 @@ module.exports = class {
 
   destroy () {
 
+    // Clear timeout
+    clearTimeout(this.timeout);
+
     var role = this.guild.roles.find(x => x.name === this.config["permissions"]["player"]);
 
     for (var i = 0; i < this.players.length; i++) {
@@ -155,7 +180,7 @@ module.exports = class {
 
     };
 
-    delete this;
+    delete process.lobby;
 
   }
 

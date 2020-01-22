@@ -1,3 +1,0 @@
-There are __{!alive}__ player{+s|alive} alive.
-The option with the highest votes is executed.
-To abstain, refrain from voting.

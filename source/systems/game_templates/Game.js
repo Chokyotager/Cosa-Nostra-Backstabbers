@@ -346,6 +346,10 @@ module.exports = class {
 
   }
 
+  save () {
+    return null;
+  }
+
   async step (adjust_to_current_time=true) {
     // Synced with Timer class
     // Should return next date
@@ -567,7 +571,7 @@ module.exports = class {
         "pin_time": new Date()
       };
 
-      log.pins.push(jx);
+      //log.pins.push(jx);
 
     };
 

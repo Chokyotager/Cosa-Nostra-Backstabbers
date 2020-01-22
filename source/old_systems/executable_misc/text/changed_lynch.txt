@@ -1,1 +1,0 @@
-:classical_building: **{;voter}** has __changed__ their vote to **{;voted}**.

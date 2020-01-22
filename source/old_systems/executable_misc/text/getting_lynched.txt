@@ -1,1 +1,0 @@
-:hammer: **{;player}** has reached __{;votes}__ votes and will be lynched at evening time{;extra_nolynch_info}.
