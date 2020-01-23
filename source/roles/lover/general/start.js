@@ -20,13 +20,6 @@ module.exports = function (player) {
       tags: ["permanent"]
     });
 
-    game.addAction("lover/lock_chats_on_death", ["killed"], {
-      from: player,
-      to: player,
-      expiry: Infinity,
-      tags: ["permanent"]
-    });
-
     var lover = game.getPlayerByIdentifier(player.misc.lover_matched);
     player.addIntroMessage(":heart: Your lover is **" + lover.getDisplayName() + "**.");
     return null;
@@ -56,13 +49,6 @@ module.exports = function (player) {
     tags: ["permanent"]
   });
 
-  game.addAction("lover/lock_chats_on_death", ["killed"], {
-    from: player,
-    to: player,
-    expiry: Infinity,
-    tags: ["permanent"]
-  });
-
   player.addIntroMessage(":heart: Your lover is **" + matched.getDisplayName() + "**.");
 
   createLoverChannels();
@@ -81,6 +67,9 @@ module.exports = function (player) {
 
     player.misc.lover_channel = channel.id;
     matched.misc.lover_channel = channel.id;
+
+    player.addSpecialChannel(channel);
+    matched.addSpecialChannel(channel);
 
     await channel.send("**This is the Lovers' chat.**\n\nThis chat is open to both parties only at night.");
 

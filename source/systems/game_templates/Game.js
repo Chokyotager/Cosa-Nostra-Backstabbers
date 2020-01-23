@@ -12,7 +12,7 @@ var base_perms = JSON.parse(fs.readFileSync(__dirname + "/../base_perms.json"));
 
 module.exports = class {
 
-  constructor (client, config, members, setup) {
+  constructor (client, config, members, setup, setup_object) {
 
     // Game instance is destroyed upon game completion
     this.config = JSON.parse(JSON.stringify(config));
@@ -34,6 +34,8 @@ module.exports = class {
     this.intro_messages = new Array();
 
     this.channels = new Object();
+
+    this.setup = setup_object;
 
     // Refer to setup
     this.period = 0;
@@ -1218,6 +1220,8 @@ module.exports = class {
 
     executable.misc.removeAllPlayerRoles(this.getGuild(), this.config);
     executable.conclusion.openChats(this);
+
+    process.resetStatus();
 
     // Remove the process
     delete process.game;

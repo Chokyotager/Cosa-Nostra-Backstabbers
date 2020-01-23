@@ -17,6 +17,7 @@ module.exports = async function (game, faction, description) {
     concat.push(text);
   };
 
+  message = message.replace(new RegExp("{;setup}", "g"), game.setup.setup.NAME);
   message = message.replace(new RegExp("{;players}", "g"), concat.join("\n"));
 
   await game.getLogChannel().send(format(game, message));

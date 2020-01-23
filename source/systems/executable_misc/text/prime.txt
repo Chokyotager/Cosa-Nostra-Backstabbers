@@ -1,5 +1,5 @@
 ~~                                                                                                                                 ~~
-**GAME PRIMED**    [Default rolelist]
+**GAME PRIMED**    [**{;setup}** gamemode]
 
 {;players}
 

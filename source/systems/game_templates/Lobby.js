@@ -162,7 +162,7 @@ module.exports = class {
     clearTimeout(this.timeout);
 
     // Run standard setup determination, etc.
-    process.game = new Game(this.client, this.config, this.players, setup);
+    process.game = new Game(this.client, this.config, this.players, setup, this.setup);
     delete process.lobby;
 
   }

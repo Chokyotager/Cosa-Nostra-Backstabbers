@@ -20,14 +20,20 @@ module.exports = function (actionable, game, params) {
   var target = game.getPlayerByIdentifier(actionable.to);
 
   // Check roles
-  var immunity = target.getStat("detection-immunity", Math.max);
+  var immunity = target.getStat("detection-immunity");
 
   // Not immune
   if (immunity < 1) {
 
     // Vagrant
-    if (target.role_identifier === "vagrant") {
-      game.addMessage(from, responses["mafia"]);
+    if (immunity < 0) {
+
+      if (target.role.alignment === "town") {
+        game.addMessage(from, responses["mafia"]);
+      } else {
+        game.addMessage(from, responses["town"]);
+      };
+
       return null;
     };
 

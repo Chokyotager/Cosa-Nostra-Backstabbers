@@ -48,6 +48,8 @@ module.exports = class {
 
     this.setup = setups[setup];
 
+    return this;
+
   };
 
   getAvailableSetups () {
@@ -74,6 +76,30 @@ module.exports = class {
     game_parameters.playing.roles = auxils.cryptographicShuffle(roles);
 
     return auxils.objectOverride(default_config, game_parameters);
+
+  }
+
+  evaluateRange (minimum=0, maximum=Infinity) {
+
+    var player_limits = this.setup.PLAYER_LIMITS;
+
+    var permutations = new Object();
+
+    for (var i = Math.max(minimum, player_limits[0]); i < Math.min(maximum, player_limits[1]) + 1; i++) {
+
+      // Fill with fake players
+      var players = new Array(i);
+
+      var [roles, parameters] = this.setup(players);
+
+      permutations[i.toString()] = {
+        "roles": roles,
+        "parameters": parameters
+      };
+
+    };
+
+    return permutations;
 
   }
 
