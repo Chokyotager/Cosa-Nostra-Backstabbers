@@ -98,6 +98,10 @@ module.exports = class {
     return guild.channels.get(this.channels[name].id);
   }
 
+  async createPrivateChannel () {
+    return await executable.misc.createPrivateChannel(this, ...arguments);
+  }
+
   getPlayerById (id) {
     for (var i = 0; i < this.players.length; i++) {
       if (this.players[i].id === id) {
@@ -483,6 +487,7 @@ module.exports = class {
   }
 
   async messagePeriodicUpdate (offset=0) {
+    await this.getNewLogChannel.send("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
     await this.messageAll("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
   }
 

@@ -8,7 +8,7 @@ module.exports = async function (game, message, params) {
   var alive_message = new String();
   for (var i = 0; i < alive_players.length; i++) {
 
-    alive_message += (i + 1) + ". " + alive_players[i].member.displayName;
+    alive_message += (i + 1) + ". " + alive_players[i].member.displayName + "\n";
 
   };
 

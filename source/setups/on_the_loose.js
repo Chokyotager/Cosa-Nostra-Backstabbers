@@ -16,7 +16,8 @@ module.exports = function (players) {
 
 };
 
-module.exports.NAME = "On the Loose!";
+module.exports.NAME = "A psychopathic serial killer is on the loose! What do you do?";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "The default game.";
+module.exports.AUTHORS = ["VoidMist"];
 module.exports.PLAYER_LIMITS = [3, 8];

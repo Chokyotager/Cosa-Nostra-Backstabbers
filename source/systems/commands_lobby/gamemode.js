@@ -1,6 +1,8 @@
 var setups = require("../setups.js");
 var auxils = require("../auxils.js");
 
+var Setup = require("../game_templates/Setup.js");
+
 module.exports = async function (message, params, config) {
 
   var member = message.member;
@@ -22,6 +24,29 @@ module.exports = async function (message, params, config) {
     await message.channel.send(":video_game: **Available gamemodes**:\n\n" + names.join(", ") + "");
 
     return null;
+  };
+
+  if (params[0].toLowerCase() === "info") {
+
+    if (params.length < 2) {
+      await message.channel.send(":x: Wrong syntax! Use `" + config["command-prefix"] + "gamemode [info <gamemode>]` instead!");
+      return null;
+    };
+
+    // Show game info
+    var setup = new Setup();
+    var best_match = setup.getSetupMatch(params[1].toLowerCase());
+
+    if (best_match.score < 0.7) {
+      await message.channel.send(":x: I cannot find that setup!");
+      return null;
+    };
+
+    setup = best_match.setup;
+
+    await message.channel.send(":clipboard: Setup information for **" + setup.NAME + "**:\n```ini\n[Players]\n" + setup.PLAYER_LIMITS[0] + "-" + setup.PLAYER_LIMITS[1] + "\n\n[Author" + auxils.vocab("s", setup.AUTHORS.length) + "]\n" + auxils.pettyFormat(setup.AUTHORS) + "\n\n[Info]\n" + setup.INFO + "```\nFor the role list, please use `" + config["command-prefix"] + "rl <setup>`.");
+    return null;
+
   };
 
   if (process.game) {

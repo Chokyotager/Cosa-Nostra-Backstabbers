@@ -28,4 +28,5 @@ module.exports = function (players) {
 module.exports.NAME = "Default";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "The default game.";
+module.exports.AUTHORS = ["Jared", "ChocoParrot"];
 module.exports.PLAYER_LIMITS = [3, 16];

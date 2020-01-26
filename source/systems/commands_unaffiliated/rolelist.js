@@ -33,8 +33,8 @@ module.exports = async function (message, params, config) {
         return null;
       };
 
-      if (setup.PLAYER_LIMITS[0] > limit || setup.PLAYER_LIMITS[1] < limit) {
-        await message.channel.send(":x: The setup **" + setup_name + "** can only hold **" + setup.PLAYER_LIMITS[0] + "** - **" + setup.PLAYER_LIMITS[1] + "** player" + auxils.vocab("s", setup.PLAYER_LIMITS[1]) + "!");
+      if (setup.setup.PLAYER_LIMITS[0] > limit || setup.setup.PLAYER_LIMITS[1] < limit) {
+        await message.channel.send(":x: The setup **" + setup_name + "** can only hold **" + setup.setup.PLAYER_LIMITS[0] + "** - **" + setup.PLAYER_LIMITS[1] + "** player" + auxils.vocab("s", setup.setup.PLAYER_LIMITS[1]) + "!");
         return null;
       };
 
@@ -43,7 +43,7 @@ module.exports = async function (message, params, config) {
     } else {
 
       var output = setup.evaluateRange();
-      
+
     };
 
     await message.channel.send(":clipboard: Role list for gamemode **" + setup_name + "**" + sample_text + "\n```ini\n" + evaluateRolelist(output) + "```");
@@ -129,17 +129,16 @@ function evaluateRolelist (output) {
       // Find all alignments
       for (var j = 0; j < roles.length; j++) {
 
-        if (!alignments.includes(cpl(roles[i].role.alignment))) {
-          alignments.push(cpl(roles[i].role.alignment));
+        if (!alignments.includes(cpl(roles[j].role.alignment))) {
+          alignments.push(cpl(roles[j].role.alignment));
         };
 
       };
 
       alignments.sort();
 
-      for (var j = 0; j < alignments.length; j++) {
-        ret += "[" + alignments[j] + "] " + roles.filter(x => alignments[j] === cpl(x.role.alignment)).map(x => (x.count > 1 ? x.count + "x " : "") + cpl(x.role["role-name"])).join(", ") + "\n\n";
-
+      for (var k = 0; k < alignments.length; k++) {
+        ret += "[" + alignments[k] + "] " + roles.filter(x => alignments[k] === cpl(x.role.alignment)).map(x => (x.count > 1 ? x.count + "x " : "") + cpl(x.role["role-name"])).join(", ") + "\n\n";
       };
 
     } else {

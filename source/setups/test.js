@@ -19,4 +19,5 @@ module.exports = function (players) {
 module.exports.NAME = "Test";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "The test game.";
+module.exports.AUTHORS = ["ChocoParrot"];
 module.exports.PLAYER_LIMITS = [1, 1];

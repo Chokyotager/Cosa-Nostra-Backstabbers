@@ -18,5 +18,6 @@ module.exports = function (players) {
 
 module.exports.NAME = "Boom Town!";
 module.exports.VARIABLE_SETUP = false;
-module.exports.INFO = "The default game.";
+module.exports.INFO = "Boom boom.";
+module.exports.AUTHORS = ["VoidMist"];
 module.exports.PLAYER_LIMITS = [3, 8];
