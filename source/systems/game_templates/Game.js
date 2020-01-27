@@ -487,8 +487,19 @@ module.exports = class {
   }
 
   async messagePeriodicUpdate (offset=0) {
-    await this.getNewLogChannel().send("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
     await this.messageAll("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
+  }
+
+  async sendNewLogMessage (offset=0) {
+
+    if (this.steps + offset === 0) {
+      var addendum = "         [*game start*]";
+    } else {
+      var addendum = new String();
+    };
+
+    await this.getNewLogChannel().send("~~                                              ~~    **" + this.getFormattedDay(offset) + "**" + addendum);
+
   }
 
   async messageAll (message, pin=false) {
@@ -522,6 +533,9 @@ module.exports = class {
   }
 
   cycle () {
+
+    this.sendNewLogMessage();
+
     if (this.period % 2 === 0) {
 
       this.day();
@@ -1226,7 +1240,7 @@ module.exports = class {
     executable.misc.removeAllPlayerRoles(this.getGuild(), this.config);
     executable.conclusion.openChats(this);
 
-    process.resetStatus();
+    process.resetStatus(this.client);
 
     // Remove the process
     delete process.game;

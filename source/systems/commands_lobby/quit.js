@@ -6,6 +6,13 @@ module.exports = async function (message, params, config) {
 
     var game = process.game;
 
+    if (game.players.some(x => x.id === message.author.id)) {
+
+      await message.channel.send(":x: You are not in the current game!");
+      return null;
+
+    };
+
     if ((params[0] || new String()).toLowerCase() === "force") {
 
       game.modkill(message.author.id);
