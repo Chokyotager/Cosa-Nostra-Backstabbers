@@ -487,7 +487,7 @@ module.exports = class {
   }
 
   async messagePeriodicUpdate (offset=0) {
-    await this.getNewLogChannel.send("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
+    await this.getNewLogChannel().send("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
     await this.messageAll("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
   }
 
