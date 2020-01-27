@@ -4,6 +4,8 @@ module.exports = async function (message, params, config) {
 
   if (process.game) {
 
+    var game = process.game;
+
     if ((params[0] || new String()).toLowerCase() === "force") {
 
       game.modkill(message.author.id);
