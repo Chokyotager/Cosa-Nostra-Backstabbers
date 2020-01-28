@@ -58,11 +58,14 @@ client.on("message", async function (message) {
     var edited = content.substring(config["command-prefix"].length, content.length).split(/[ ]/g);
 
     var command = edited[0].toLowerCase();
+
+    var raw_command = Array.from(edited).join(" ");
+
     edited.splice(0, 1);
 
     if (message.channel.type === "text") {
 
-      console.log(message);
+      var member = message.member;
 
       if (config["disabled-commands"].includes(command)) {
         message.channel.send(":x: That command has been disabled in the configuration!");
@@ -98,8 +101,6 @@ client.on("message", async function (message) {
       };
 
       if (commands.saves[command] !== undefined) {
-        // Check permissions
-        var member = message.member;
 
         if (member.roles.some(x => x.name === config["permissions"]["admin"])) {
           logger.log(2, "User %s [%s#%s] ran save-type command \"%s\".", member.id, member.user.username, member.user.discriminator, raw_command);

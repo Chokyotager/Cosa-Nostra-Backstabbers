@@ -3,14 +3,14 @@ var crypto = require("crypto");
 
 var main_dir = __dirname + "/../../../";
 
-var ignore = ["configuration/", ".git"];
+var ignore = ["configuration/", ".git", "configuration.json"];
 
 if (fs.existsSync(main_dir + ".gitignore")) {
 
   var gitignore_options = fs.readFileSync(main_dir + ".gitignore", "utf8").split("\n").filter(x => !x.startsWith("#") && x !== "");
 
   ignore = ignore.concat(gitignore_options);
-  
+
 };
 
 var hash_type = "sha256";
@@ -40,7 +40,7 @@ module.exports = async function (message, params, config) {
 
   var output = hash.digest("hex");
 
-  await message.channel.send(":hash: The code's output `" + hash_type + "` hash (excluding `.gitignore`'d options and `configuration/`) is:\n```fix\n" + hash_type + "-" + output + "```");
+  await message.channel.send(":hash: The code's output `" + hash_type + "` hash (excluding `.gitignore`'d options and `configuration/` and `configuration.json`) is:\n```fix\n" + hash_type + "-" + output + "```");
 
 };
 
