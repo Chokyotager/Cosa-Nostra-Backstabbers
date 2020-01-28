@@ -58,7 +58,6 @@ client.on("message", async function (message) {
     var edited = content.substring(config["command-prefix"].length, content.length).split(/[ ]/g);
 
     var command = edited[0].toLowerCase();
-
     var raw_command = Array.from(edited).join(" ");
 
     edited.splice(0, 1);
@@ -100,21 +99,9 @@ client.on("message", async function (message) {
         return null;
       };
 
-      if (commands.saves[command] !== undefined) {
-
-        if (member.roles.some(x => x.name === config["permissions"]["admin"])) {
-          logger.log(2, "User %s [%s#%s] ran save-type command \"%s\".", member.id, member.user.username, member.user.discriminator, raw_command);
-          await commands.saves[command](message, edited, config);
-        } else {
-          logger.log(1, "User %s [%s#%s] failed to run save-type command (due to lack of permissions) \"%s\".", member.id, member.user.username, member.user.discriminator, raw_command);
-          message.channel.send(":x: You do not have sufficient permissions to use this command!");
-        };
-
-        return null;
-      };
-
       if (commands.lobby[command] !== undefined) {
         // Run command
+        logger.log(0, "User %s [%s#%s] executed lobby-type command \"%s\".", member.id, member.user.username, member.user.discriminator, key, raw_command);
         commands.lobby[command](message, edited, config);
         return null;
       };

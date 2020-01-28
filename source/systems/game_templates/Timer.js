@@ -188,7 +188,7 @@ module.exports = class {
     this.clearTick();
 
     if (time === undefined) {
-      time = config["ticks"]["time"];
+      time = config["miscellaneous"]["tick-time"];
     };
 
     var run_as = this;
