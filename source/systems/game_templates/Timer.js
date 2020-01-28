@@ -1,3 +1,16 @@
+// mediate the day/night cycles, set intervals
+
+// this class is NOT meant to be serialised
+
+var logger = process.logger;
+
+var crypto = require("crypto");
+var fs = require("fs");
+
+var Game = require("./Game.js");
+var Player = require("./Player.js");
+var Actions = require("./Actions.js");
+
 var auxils = require("../auxils.js");
 
 module.exports = class {
@@ -22,7 +35,7 @@ module.exports = class {
     var designated = this.game.next_action;
 
     if (this.game.state === "ended") {
-      console.log("Did not prime as game has ended.");
+      logger.log(2, "Did not prime as game has ended.");
       return null;
     };
 
@@ -57,7 +70,7 @@ module.exports = class {
 
   async step () {
 
-    console.log("Step fired.");
+    logger.log(2, "Game step activated.");
     var next_action = await this.game.step();
 
     // TEMP: set to not fire next step for obvious reasons
@@ -75,7 +88,7 @@ module.exports = class {
 
   async fastforward () {
 
-    console.log("Fastforwarded.");
+    logger.log(2, "Fastforwarded.");
     var next_action = await this.game.step(true);
 
     if (next_action === null) {
@@ -175,7 +188,7 @@ module.exports = class {
     this.clearTick();
 
     if (time === undefined) {
-      time = 200;
+      time = config["miscellaneous"]["tick-time"];
     };
 
     var run_as = this;

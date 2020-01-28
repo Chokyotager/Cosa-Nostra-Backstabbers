@@ -19,10 +19,11 @@ module.exports = function (game, message, params) {
   var to = game.getPlayerMatch(params[0]);
   var from = game.getPlayerById(message.author.id);
 
-  actions.delete(x => (x.from === from.identifier && x.tags.includes("mafia_factional_side")) || (x => x.from === from.identifier && x.tags.includes("mafia_factional_main")));
+  actions.delete(x => (x.from === from.identifier && (x.tags.includes("mafia_factional_side") || x.tags.includes("mafia_factional_main"))));
 
   if (to.score < 0.7 || params[0].toLowerCase() === "nobody") {
     message.channel.send(":no_entry_sign: You have decided not to roleblock anyone tonight.");
+    game.getChannel("mafia").send(":exclamation: **" + from.getDisplayName() + "** is not roleblocking anybody tonight.");
     return null;
   };
 

@@ -20,5 +20,5 @@ module.exports = async function (game, role) {
   };
 
   member.removeRole(alive_role);
-  
+
 };

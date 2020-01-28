@@ -1,5 +1,7 @@
 // Stores all the executable actions
 
+var logger = process.logger;
+
 var actionables = require("../actionables.js"); // for now
 var crypto = require("crypto");
 var Player = require("./Player.js");
@@ -30,9 +32,10 @@ module.exports = class {
 
     // Actions are calculated relative to the step
 
-    var allowed = ["cycle", "chat", "lynch", "nightkilled",
-    "attacked", "killed", "visit", "roleblock", "postcycle",
-    "instant", "outvisit", "retrovisit", "retrocycle", "miscellaneous"];
+    var allowed = ["cycle", "chat", "lynch", "attacked",
+    "killed", "visit", "roleblock", "postcycle", "instant",
+    "outvisit", "retrooutvisit", "retrovisit", "retrocycle", "vote",
+    "unvote", "arbitrary", "miscellaneous"];
 
     for (var i = 0; i < triggers.length; i++) {
       if (!allowed.includes(triggers[i])) {
@@ -42,6 +45,15 @@ module.exports = class {
     };
 
     var actionable = options;
+
+    if (triggers.includes("retrooutvisit")) {
+
+      if (triggers.length > 1) {
+        var err = "Retrooutvisit trigger cannot be combined.";
+        throw new Error(err);
+      };
+
+    };
 
     if (triggers.includes("retrovisit")) {
 
@@ -55,7 +67,7 @@ module.exports = class {
     if (triggers.includes("retrocycle")) {
 
       if (triggers.length > 1) {
-        var err = "Retrovisit trigger cannot be combined.";
+        var err = "Retrocycle trigger cannot be combined.";
         throw new Error(err);
       };
 
@@ -68,17 +80,23 @@ module.exports = class {
     actionable.tags = actionable.tags || new Array();
     actionable.meta = actionable.meta || new Object();
 
+    if (actionable.tags.includes("system")) {
+      actionable.from = "*";
+      actionable.to = "*";
+    };
+
     if (actionable.from !== "*") {
       var from = this.game.getPlayer(actionable.from);
+      var implicit_priority = from.getStat("priority", Math.max);
       actionable.from = from.identifier;
+    } else {
+      var implicit_priority = 0;
     };
 
     if (actionable.to !== "*") {
       var to = this.game.getPlayer(actionable.to);
       actionable.to = to.identifier;
     };
-
-    var implicit_priority = from.getStat("priority", Math.max);
 
     actionable.priority = actionable.priority || implicit_priority;
 
@@ -109,7 +127,7 @@ module.exports = class {
       trigger: ["cycle"]
     };*/
 
-    // triggers: cycle, chat, lynch, nightkilled, attacked
+    // triggers: cycle, chat, lynch, arbitrary, attacked
 
     this.actions.push(actionable);
 
@@ -275,7 +293,7 @@ module.exports = class {
 
     // Actions: [from, to, game]
     // Returns: boolean
-    // If true for chat, lynch, nightkilled types, subtract one
+    // If true for chat, lynch, arbitrary types, subtract one
     // from expiration
 
     // Create loop identifier
@@ -316,7 +334,7 @@ module.exports = class {
 
       action._scan.push(loop_id);
 
-      if (["cycle"].includes(type) && !action.triggers.includes("retrovisit") && !action.triggers.includes("retrocycle")) {
+      if (["cycle"].includes(type) && !action.triggers.includes("retrooutvisit") && !action.triggers.includes("retrovisit") && !action.triggers.includes("retrocycle")) {
 
         action.execution--;
         action.cycles++;
@@ -327,7 +345,7 @@ module.exports = class {
 
       };
 
-      if (["retrocycle"].includes(type) && (action.triggers.includes("retrovisit") || action.triggers.includes("retrocycle"))) {
+      if (["retrocycle"].includes(type) && (action.triggers.includes("retrooutvisit") || action.triggers.includes("retrovisit") || action.triggers.includes("retrocycle"))) {
 
         action.execution--;
         action.cycles++;
@@ -345,29 +363,35 @@ module.exports = class {
       var run = actionables[action.identifier];
 
       if (!run) {
-        console.warn("Bad undefined function in actions: " + action.identifier + "!");
+        logger.log(3, "Bad undefined function in actions: " + action.identifier + "!");
         i++;
         continue;
       };
+
+      var rerun = false;
 
       function execute () {
 
         rerun = true;
 
         try {
+
           var result = run(action, game, params);
           return result;
+
         } catch (err) {
-          console.log(err);
-          return false;
+
+          logger.logError(err);
+          logger.log(4, "[Error follow-up] attempted to destroy action %s to prevent snowballing.\nFrom: %s\nTo: %s", action.identifier, action.from, action.to);
+          // Attempts to destroy action in event of failure
+          return true;
+
         };
 
       };
 
-      var rerun = false;
-
       // Non-routine triggers
-      if (["chat", "lynch", "nightkill", "attacked", "killed", "visit", "roleblock", "outvisit", "retrovisit", "miscellaneous"].includes(type)) {
+      if (["chat", "lynch", "attacked", "killed", "visit", "roleblock", "outvisit", "retrooutvisit", "retrovisit", "vote", "unvote", "arbitrary", "miscellaneous"].includes(type)) {
         var target = action.target || action.to;
 
         var check = params.target;
@@ -437,13 +461,27 @@ module.exports = class {
     if (type === "cycle") {
 
       for (var i = 0; i < this.visit_log.length; i++) {
-        this.execute("retrovisit", this.visit_log[i]);
+
+        var visit_log = this.visit_log[i];
+
+        this.execute("retrovisit", visit_log);
+
+        var inverse_log = Object.assign(new Object(), visit_log);
+
+        inverse_log.visited = inverse_log.target;
+        inverse_log.target = inverse_log.visitor;
+
+        delete inverse_log.visitor;
+
+        this.execute("retrooutvisit", inverse_log);
+
       };
 
       this.execute("retrocycle");
 
       this.previous_visit_log = this.previous_visit_log.concat(this.visit_log);
       this.visit_log = new Array();
+
     };
 
     // Decrement those outside cycle

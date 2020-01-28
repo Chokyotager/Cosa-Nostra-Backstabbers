@@ -26,7 +26,7 @@ module.exports = async function (game, broadcast) {
   } else {
     var day_vote_message = new String();
   };
-  
+
   sendable = sendable.replace(new RegExp("{;day_vote_message}", "g"), day_vote_message);
 
   var message = await log.send(format(game, sendable));

@@ -1,0 +1,32 @@
+{
+
+  "name": "Expanded Primrose C9++",
+  "type": "Setup",
+  "description": "A semi-open expanded setup designed to randomise the field.",
+
+  "link": null,
+
+  "authors": ["ChocoParrot", "Fiasco"],
+
+  "overrides": {
+
+    "flavours": [],
+
+    "role_win_conditions": [],
+
+    "roles": [
+      "c9++/*",
+      "primrose-c9++/*",
+      "-primrose-c9++/mafia_one_shot_janitor"
+    ],
+
+    "attributes": [
+      "c9++/*",
+      "primrose-c9++/*"
+    ]
+
+  },
+
+  "dependencies": ["primrose-c9++"]
+
+}

@@ -5,9 +5,11 @@ module.exports = function (game) {
   var jack_of_all_trades = game.findAll(x => x.role_identifier === "jack_of_all_trades" && x.misc.joat_actions_left < 1 && !x.hasWon());
 
   if (jack_of_all_trades.length > 0) {
+    
+    var winners = jack_of_all_trades.filter(x => x.canWin());
 
     // Revolutionaries win
-    game.setWins(jack_of_all_trades);
+    game.setWins(winners);
     return true;
 
   };

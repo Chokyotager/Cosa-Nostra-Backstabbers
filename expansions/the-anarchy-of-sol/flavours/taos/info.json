@@ -1,16 +1,22 @@
 {
 
+  "default-display-flavour": true,
+
   "show-role-equivalent": false,
 
   "show-vanilla-banner": false,
 
   "display-role-equivalent-on-death": true,
 
+  "display-role-equivalent-in-win-log": true,
+
   "investigator-sees-flavour-role": true,
 
   "show-role-category": true,
 
   "post-role-card-and-description-on-death": true,
+
+  "display-standard-role-details": false,
 
   "step-names": null
 

@@ -24,16 +24,17 @@ for (var i = 0; i < scripts.length; i++) {
 
   var script_info = scripts[i].split("/");
 
-  var expansion = script_info[0];
+  var expansion_identifier = script_info[0];
   var script = script_info[1];
 
-  if (expansion === "lcn") {
+  if (expansion_identifier === "lcn") {
 
     var directory = scripts_dir + "/" + script;
 
   } else {
 
-    var directory = __dirname + "/../../expansions/" + expansion + "/role_win_conditions/" + script;
+    var expansion = expansions.find(x => x.identifier === expansion_identifier);
+    var directory = expansion.expansion_directory + "/role_win_conditions/" + script;
 
   };
 

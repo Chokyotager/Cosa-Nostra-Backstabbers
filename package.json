@@ -1,7 +1,8 @@
 {
-  "name": "Discord Mafia",
-  "description": "",
-  "version": "1.0.0",
+  "name": "cosa-nostra-backstabbers",
+  "description": "Turbo Mafia bot based off LCN",
+  "update-name": "Foxjoaquim",
+  "version": "4.1.5b",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,16 +11,28 @@
     "type": "git",
     "url": "https://github.com/Chokyotager/La-Cosa-Nostra"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "Mafia",
+    "Werewolf",
+    "Discord",
+    "Discord-bot",
+    "Games",
+    "Fun"
+  ],
+  "author": "ChocoParrot",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Chokyotager/La-Cosa-Nostra/issues"
+    "url": "https://github.com/Chokyotager/Cosa-Nostra-Backstabbers/issues"
   },
-  "homepage": "https://github.com/Chokyotager/La-Cosa-Nostra",
+  "homepage": "https://github.com/Chokyotager/Cosa-Nostra-Backstabbers",
   "dependencies": {
-    "discord.js": "^11.5.1",
+    "discord.js": "~11.5.0",
     "request": "~2.88.0",
-    "request-promise": "4.2.2"
-  }
+    "request-promise": "~4.2.5",
+    "semver": "~7.1.1"
+  },
+  "engines": {
+    "node": ">=10.15.0"
+  },
+  "engineStrict": true
 }

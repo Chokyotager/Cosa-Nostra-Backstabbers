@@ -1,5 +1,7 @@
 // Accounts for the flavours API
 
+var logger = process.logger;
+
 var fs = require("fs");
 
 var expansions = require("./expansions.js");
@@ -9,14 +11,11 @@ var ret = new Object();
 
 var flavours_dir = __dirname + "/../flavours/";
 
-if (!fs.existsSync(flavours_dir)) {
-
-  fs.mkdirSync(flavours_dir);
-  console.log("[Error] Flavours folder not found, made one instead!");
-
+if (fs.existsSync(flavours_dir)) {
+  var flavours = fs.readdirSync(flavours_dir).map(x => "lcn/" + x);
+} else {
+  var flavours = new Array();
 };
-
-var flavours = fs.readdirSync(flavours_dir).map(x => "lcn/" + x);
 
 var rules = new Array();
 
@@ -34,16 +33,17 @@ for (var i = 0; i < flavours.length; i++) {
 
   var flavour_info = flavours[i].split("/");
 
-  var expansion = flavour_info[0];
+  var expansion_identifier = flavour_info[0];
   var flavour = flavour_info[1];
 
-  if (expansion === "lcn") {
+  if (expansion_identifier === "lcn") {
 
     var directory = flavours_dir + "/" + flavour;
 
   } else {
 
-    var directory = __dirname + "/../../expansions/" + expansion + "/flavours/" + flavour;
+    var expansion = expansions.find(x => x.identifier === expansion_identifier);
+    var directory = expansion.expansion_directory + "/flavours/" + flavour;
 
   };
 

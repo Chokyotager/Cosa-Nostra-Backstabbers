@@ -24,16 +24,17 @@ for (var i = 0; i < attributes.length; i++) {
 
   var attribute_info = attributes[i].split("/");
 
-  var expansion = attribute_info[0];
+  var expansion_identifier = attribute_info[0];
   var attribute = attribute_info[1];
 
-  if (expansion === "lcn") {
+  if (expansion_identifier === "lcn") {
 
     var directory = attributes_dir + "/" + attribute;
 
   } else {
 
-    var directory = __dirname + "/../../expansions/" + expansion + "/attributes/" + attribute;
+    var expansion = expansions.find(x => x.identifier === expansion_identifier);
+    var directory = expansion.expansion_directory + "/attributes/" + attribute;
 
   };
 

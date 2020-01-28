@@ -116,6 +116,8 @@ data/
 configuration.json
 self/
 
+log.txt
+
 _+*
 meta/
 old_systems/
