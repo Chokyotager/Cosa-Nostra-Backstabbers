@@ -1,0 +1,12 @@
+{
+  "playing": {
+    "players": "auto",
+
+    "roles": null,
+
+    "expansions": ["c9++"],
+    "shuffle": true,
+    "flavour": null
+
+  }
+}

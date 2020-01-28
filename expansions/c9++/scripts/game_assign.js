@@ -1,5 +1,6 @@
-var lcn = require("../../../source/lcn.js");
 var logger = process.logger;
+
+var lcn = require("../../../source/lcn.js");
 
 var configurations = {
 

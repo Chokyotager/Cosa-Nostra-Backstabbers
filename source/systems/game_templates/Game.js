@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 var executable = require("../executable.js");
 
 var Actions = require("./Actions.js");
@@ -22,11 +23,49 @@ module.exports = class {
     this.client = client;
 
     this.players = new Array();
+=======
+/*
+By the time this instance
+is initialised, the roles should
+already be defined
+*/
+
+var logger = process.logger;
+
+var executable = require("../executable.js");
+var alphabets = require("../alpha_table.js");
+
+var Actions = require("./Actions.js");
+var Player = require("./Player.js");
+
+var expansions = require("../expansions.js");
+
+var auxils = require("../auxils.js");
+var flavours = require("../flavours.js");
+
+var lcn = require("../../lcn.js");
+
+module.exports = class {
+
+  constructor (client, config) {
+
+    this.client = client;
+    this.config = config;
+    this.temp = new Object();
+
+  }
+
+  init (players) {
+
+    this.players = players;
+    this.init_time = new Date();
+>>>>>>> LCN/master
 
     this.actions = new Actions().init(this);
 
     this.trial_vote_operations = new Array();
 
+<<<<<<< HEAD
     this.players_tracked = members.length;
 
     this.period_log = new Object();
@@ -43,10 +82,27 @@ module.exports = class {
     this.state = "pre-game";
 
     // WORK IN PROGRESS
+=======
+    this.players_tracked = players.length;
+
+    this.fast_forward_votes = new Array();
+
+    this.channels = new Object();
+
+    this.period_log = new Object();
+
+    this.intro_messages = new Array();
+
+    this.period = this.config["game"]["day-zero"] ? 0 : 1;
+    this.steps = 0;
+    this.state = "pre-game";
+
+>>>>>>> LCN/master
     this.flavour_identifier = this.config["playing"]["flavour"];
 
     this.voting_halted = false;
 
+<<<<<<< HEAD
     var roles = this.config["playing"]["roles"];
 
     // Define players
@@ -75,6 +131,56 @@ module.exports = class {
     await this.createGameChannels();
     await executable.misc.lockLobby(this);
     this.timer = new Timer(this);
+=======
+    this.game_config_override = new Object();
+
+    // Timezone is GMT relative
+    this.timezone = this.config.time.timezone;
+
+    for (var i = expansions.length - 1; i >= 0; i--) {
+
+      var game_init = expansions[i].scripts.game_init;
+
+      if (!game_init) {
+        continue;
+      };
+
+      game_init(this);
+
+    };
+
+    this.primeDesignatedTime();
+
+    for (var i = 0; i < this.players.length; i++) {
+      this.players[i].setGame(this);
+      this.players[i].postGameInit();
+    };
+
+    return this;
+
+  }
+
+  primeDesignatedTime (change_start=true) {
+    // Always start day zero at closest 12pm/am
+    var current = new Date();
+    var utc_hour = current.getUTCHours();
+
+    var now = new Date();
+
+    current.setUTCHours(-this.timezone, 0, 0, 0);
+
+    while (current.getTime() - now.getTime() < 0) {
+      current.setUTCHours(current.getUTCHours() + 24);
+    };
+
+    if (change_start) {
+      this.start_time = current;
+    };
+
+    this.current_time = current;
+
+    this.next_action = new Date(current);
+>>>>>>> LCN/master
 
   }
 
@@ -98,8 +204,15 @@ module.exports = class {
     return guild.channels.get(this.channels[name].id);
   }
 
+<<<<<<< HEAD
   async createPrivateChannel () {
     return await executable.misc.createPrivateChannel(this, ...arguments);
+=======
+  getChannelById (id) {
+    var guild = this.getGuild();
+
+    return guild.channels.get(id);
+>>>>>>> LCN/master
   }
 
   getPlayerById (id) {
@@ -134,6 +247,18 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  getPlayerByAlphabet (alphabet) {
+    for (var i = 0; i < this.players.length; i++) {
+      if (this.players[i].alphabet === alphabet.toUpperCase()) {
+        return this.players[i];
+      };
+    };
+    return null;
+  }
+
+>>>>>>> LCN/master
   getAlive () {
     // Count number alive
     var count = new Number();
@@ -158,6 +283,7 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
   toggleVote (voter, voted_against) {
     // Post corresponding messages
 
@@ -168,12 +294,201 @@ module.exports = class {
     var no_lynch_vote = voted_against === "nl";
     var voted_no_lynch = this.isVotingNoLynch(voter.identifier);
 
+=======
+  async createTrialVote (load_preemptives=true) {
+
+    var messages = await executable.misc.createTrialVote(this);
+
+    var period_log = this.getPeriodLog();
+
+    period_log.trial_vote = {messages: new Array(), channel: messages[0].channel.id};
+
+    for (var i = 0; i < messages.length; i++) {
+      period_log.trial_vote.messages.push(messages[i].id);
+    };
+
+    this.save();
+
+    this.instantiateTrialVoteCollector();
+
+    if (load_preemptives) {
+
+      this.loadPreemptiveVotes();
+
+    };
+
+    await this.__reloadTrialVoteMessage();
+
+  }
+
+  async instantiateTrialVoteCollector () {
+
+    var period_log = this.getPeriodLog();
+
+    if (period_log === undefined || period_log.trial_vote === null) {
+      return null;
+    };
+
+    var channel = this.client.channels.get(period_log.trial_vote.channel);
+
+    this.temp.trial_collectors = new Array();
+
+    for (var i = 0; i < period_log.trial_vote.messages.length; i++) {
+      var message = await channel.fetchMessage(period_log.trial_vote.messages[i]);
+
+      // Casting instance to bigger scope
+      var run_as = this;
+
+      this.temp.trial_collectors.push(message.createReactionCollector(function (reaction, user) {
+        run_as.__receivedTrialVote(reaction, user);
+      }));
+    };
+
+  }
+
+  clearTrialVoteCollectors () {
+
+    if (!this.temp.trial_collectors) {
+      return null;
+    };
+
+    // Remove promises to free up memory
+    for (var i = 0; i < this.temp.trial_collectors.length; i++) {
+      this.temp.trial_collectors[i].stop("Autocleared");
+    };
+
+  }
+
+  clearTrialVoteReactions (remove_extra=true) {
+
+    var period_log = this.getPeriodLog();
+
+    if (period_log.trial_vote === null) {
+      return null;
+    };
+
+    var channel_id = period_log.trial_vote.channel;
+    var messages_id = period_log.trial_vote.messages;
+
+    for (var i = 0; i < messages_id.length; i++) {
+
+      if (i < 1 || !remove_extra) {
+        executable.misc.clearReactions(this, channel_id, messages_id[i]);
+      };
+
+      if (i > 0 && remove_extra) {
+        executable.misc.deleteMessage(this, channel_id, messages_id[i]);
+      };
+
+    };
+
+    this.clearTrialVoteCollectors();
+
+  }
+
+  async __receivedTrialVote (reaction, user) {
+
+    if (user.bot) {
+      return null;
+    };
+
+    reaction.remove(user);
+
+    if (!this.isAlive(user.id)) {
+      logger.log(3, user.id + " tried to vote on the trial although they are either dead or not in the game!");
+      await user.send(":x: You are not alive and in the game, please do not vote in the trials! If you try that again, I will have you kicked.");
+      return null;
+    };
+
+    var reversed = auxils.flipObject(alphabets);
+    var emote = reaction.emoji;
+
+    var alphabet = reversed[emote];
+
+    // Count the vote
+    var voter = this.getPlayerById(user.id);
+
+    // Cycle through special vote types
+    var special_vote_types = this.getPeriodLog().special_vote_types;
+    for (var i = 0; i < special_vote_types.length; i++) {
+      var vote_type = special_vote_types[i];
+
+      if (emote.name === vote_type.emote) {
+        this.toggleVote(voter, vote_type.identifier, true);
+        return null;
+      };
+    };
+
+    if (alphabet === undefined) {
+      return null;
+    };
+
+    if (alphabet === "nl") {
+
+      if (!this.config["game"]["lynch"]["no-lynch-option"]) {
+        logger.log(3, user.id + " tried voting no-lynch using the reaction poll but no-lynches are disabled!");
+        await user.send(":x: The no-lynch vote is disabled.");
+        return null;
+      };
+
+      var voted_against = "nl";
+
+    } else {
+
+      var voted_against = this.getPlayerByAlphabet(alphabet);
+
+      if (voted_against === null) {
+        return null;
+      };
+
+      // Bug check
+      if (!voted_against.status.alive) {
+        logger.log(3, "Dead player voted on!");
+        await user.send(":x: You voted on a dead player! Sorry man, but the dude is already dead!");
+        return null;
+      };
+
+    };
+
+    this.toggleVote(voter, voted_against);
+
+  }
+
+  toggleVote (voter, voted_against, special_vote=false) {
+    // Post corresponding messages
+
+    if (this.voting_halted) {
+      return null;
+    };
+
+    if (voter.getStatus("vote-blocked")) {
+      return null;
+    };
+
+    var no_lynch_vote = voted_against === "nl" && !special_vote;
+    var voted_no_lynch = this.isVotingNoLynch(voter.identifier);
+
+    // Check for (a) singular (b) total lynch counts
+    var special_vote_types = this.getPeriodLog().special_vote_types;
+    var special_votes_from = special_vote_types.filter(x => x.voters.some(y => y.identifier === voter.identifier));
+    var voted_singular = special_votes_from.some(x => x.singular);
+
+>>>>>>> LCN/master
     var magnitude = voter.getVoteMagnitude();
 
     if (no_lynch_vote) {
 
+<<<<<<< HEAD
       // NL vote is independent
       var has_voted = this.votesFrom(voter.identifier).length > 0;
+=======
+      if (voted_singular) {
+        return false;
+      };
+
+      // NL vote is independent
+      var has_voted = (this.votesFrom(voter.identifier).length + special_votes_from.length) > 0;
+>>>>>>> LCN/master
 
       if (has_voted) {
         return false;
@@ -195,15 +510,33 @@ module.exports = class {
 
       this.__checkLynchAnnouncement("nl", before_votes, after_votes);
 
+<<<<<<< HEAD
     } else {
+=======
+    } else if (!special_vote) {
+>>>>>>> LCN/master
 
       if (voted_no_lynch) {
         return false;
       };
 
+<<<<<<< HEAD
       var already_voting = voted_against.isVotedAgainstBy(voter.identifier);
 
       if (!already_voting && this.votesFrom(voter.identifier).length >= this.getLynchesAvailable()) {
+=======
+      if (voted_singular) {
+        return false;
+      };
+
+      if (voted_against.getStatus("lynch-proof")) {
+        return null;
+      };
+
+      var already_voting = voted_against.isVotedAgainstBy(voter.identifier);
+
+      if (!already_voting && (this.votesFrom(voter.identifier).length + special_votes_from.length) >= this.getLynchesAvailable()) {
+>>>>>>> LCN/master
         // New vote, check if exceeds limit
         return false;
       };
@@ -224,9 +557,47 @@ module.exports = class {
 
       this.__checkLynchAnnouncement(voted_against.identifier, before_votes, after_votes);
 
+<<<<<<< HEAD
     };
 
     if (this.hammerActive()) {
+=======
+    } else {
+      // Special vote
+
+      special_vote = special_vote_types.find(x => x.identifier === voted_against);
+
+      if (voted_no_lynch) {
+        return false;
+      };
+
+      // Check already voting
+      var already_voting = special_vote.voters.some(x => x.identifier === voter.identifier);
+
+      if (!already_voting && ((this.votesFrom(voter.identifier).length + special_votes_from.length) >= this.getLynchesAvailable() || voted_singular)) {
+        // New vote, check if exceeds limit
+        return false;
+      };
+
+      // Toggle votes
+      if (already_voting) {
+        // Remove special vote
+        special_vote.voters = special_vote.voters.filter(x => x.identifier !== voter.identifier);
+        this.execute("unvote", {target: "s/" + voted_against, voter: voter.identifier});
+      } else {
+        special_vote.voters.push({identifier: voter.identifier, magnitude: magnitude});
+        this.execute("vote", {target: "s/" + voted_against, voter: voter.identifier});
+      };
+
+    };
+
+    this.__reloadTrialVoteMessage();
+
+    // Save file
+    this.save();
+
+    if (this.hammerActive() && !this.voting_halted) {
+>>>>>>> LCN/master
       this.__checkLynchHammer();
     };
 
@@ -234,6 +605,23 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  addSpecialVoteType (identifier, name, emote, singular) {
+
+    // {reaction, name, singular}
+    var period_log = this.getPeriodLog();
+    period_log.special_vote_types.push({
+      identifier: identifier,
+      name: name,
+      emote: emote,
+      singular: singular,
+      voters: new Array()
+    });
+
+  }
+
+>>>>>>> LCN/master
   getVotesBy (identifier) {
 
     var ret = new Array();
@@ -317,6 +705,13 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  __reloadTrialVoteMessage () {
+    executable.misc.editTrialVote(this);
+  }
+
+>>>>>>> LCN/master
   clearAllVotesBy (identifier) {
     // Clears all the votes on other people
     // by id specified
@@ -337,6 +732,13 @@ module.exports = class {
       this.players[i].clearVotes();
     };
 
+<<<<<<< HEAD
+=======
+    if (edit_trial) {
+      this.__reloadTrialVoteMessage();
+    };
+
+>>>>>>> LCN/master
   }
 
   isAlive (id) {
@@ -352,18 +754,25 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
   save () {
     return null;
   }
 
   async step (adjust_to_current_time=true) {
+=======
+  async step (adjust_to_current_time=false) {
+>>>>>>> LCN/master
     // Synced with Timer class
     // Should return next date
 
     // this.config.time.day
 
+<<<<<<< HEAD
     this.voting_halted = true;
 
+=======
+>>>>>>> LCN/master
     var addition = this.state === "pre-game" ? 0 : 1;
 
     if (adjust_to_current_time) {
@@ -371,6 +780,10 @@ module.exports = class {
       this.current_time = new Date();
 
       var time = new Date();
+<<<<<<< HEAD
+=======
+      time.setUTCHours(time.getUTCHours() + 1, 0, 0, 0);
+>>>>>>> LCN/master
 
       this.next_action = calculateNextAction(time, this.period + addition, this.config);
 
@@ -381,6 +794,7 @@ module.exports = class {
 
     if (this.state === "pre-game") {
 
+<<<<<<< HEAD
       this.postPrimeLog();
 
       for (var i = 0; i < this.players.length; i++) {
@@ -396,6 +810,11 @@ module.exports = class {
       this.__routines();
       this.__start();
       this.cycle();
+=======
+      this.__routines();
+      this.cycle();
+      await this.__start();
+>>>>>>> LCN/master
 
       // Periodic updates are handled in roles/postRoleIntroduction
       // because of async issues
@@ -407,6 +826,11 @@ module.exports = class {
 
     } else if (this.state === "playing") {
 
+<<<<<<< HEAD
+=======
+      this.voting_halted = true;
+
+>>>>>>> LCN/master
       // Print period in private channel
       await this.messagePeriodicUpdate(1);
 
@@ -429,6 +853,10 @@ module.exports = class {
       this.checkWin();
 
       if (this.state === "ended") {
+<<<<<<< HEAD
+=======
+        this.save();
+>>>>>>> LCN/master
         return null;
       };
 
@@ -446,8 +874,16 @@ module.exports = class {
 
     };
 
+<<<<<<< HEAD
     this.voting_halted = false;
 
+=======
+    // Save
+    this.voting_halted = false;
+
+    this.save();
+
+>>>>>>> LCN/master
     return this.next_action;
 
     function calculateNextAction (time, period, config) {
@@ -457,9 +893,16 @@ module.exports = class {
       time = new Date(time);
 
       if (divided === 0) {
+<<<<<<< HEAD
         time.setMinutes(time.getMinutes() + config["time"]["day"]);
       } else {
         time.setMinutes(time.getMinutes() + config["time"]["night"]);
+=======
+        // Daytime
+        time.setUTCHours(time.getUTCHours() + config["time"]["day"]);
+      } else {
+        time.setUTCHours(time.getUTCHours() + config["time"]["night"]);
+>>>>>>> LCN/master
       };
 
       return time;
@@ -468,12 +911,29 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  async fastforward () {
+
+    this.voting_halted = true;
+
+    return await this.timer.fastforward();
+
+  }
+
+>>>>>>> LCN/master
   async precycle () {
 
     this.clearPeriodPins();
 
     if (this.period % 2 === 0) {
 
+<<<<<<< HEAD
+=======
+      await executable.misc.editTrialVote(this, true);
+      this.clearTrialVoteReactions();
+
+>>>>>>> LCN/master
       // Dusk
       this.checkLynches();
       this.clearVotes();
@@ -490,6 +950,7 @@ module.exports = class {
     await this.messageAll("~~                                              ~~    **" + this.getFormattedDay(offset) + "**", "permanent");
   }
 
+<<<<<<< HEAD
   async sendNewLogMessage (offset=0) {
 
     if (this.steps + offset === 0) {
@@ -502,6 +963,8 @@ module.exports = class {
 
   }
 
+=======
+>>>>>>> LCN/master
   async messageAll (message, pin=false) {
     for (var i = 0; i < this.players.length; i++) {
 
@@ -534,7 +997,21 @@ module.exports = class {
 
   cycle () {
 
+<<<<<<< HEAD
     this.sendNewLogMessage();
+=======
+    for (var i = expansions.length - 1; i >= 0; i--) {
+
+      var cycle = expansions[i].scripts.cycle;
+
+      if (!cycle) {
+        continue;
+      };
+
+      cycle(this);
+
+    };
+>>>>>>> LCN/master
 
     if (this.period % 2 === 0) {
 
@@ -550,6 +1027,10 @@ module.exports = class {
 
   day () {
     // Executed at the start of daytime
+<<<<<<< HEAD
+=======
+    this.createTrialVote();
+>>>>>>> LCN/master
 
     if (this.config["game"]["mafia"]["night-only"]) {
       executable.misc.lockMafiaChat(this);
@@ -592,7 +1073,11 @@ module.exports = class {
         "pin_time": new Date()
       };
 
+<<<<<<< HEAD
       //log.pins.push(jx);
+=======
+      log.pins.push(jx);
+>>>>>>> LCN/master
 
     };
 
@@ -696,7 +1181,11 @@ module.exports = class {
     // Successful lynches go into lynched
     // Broadcast the lynches in the main channel
 
+<<<<<<< HEAD
     //executable.misc.broadcastMainLynch(this, lynched);
+=======
+    executable.misc.broadcastMainLynch(this, lynched);
+>>>>>>> LCN/master
 
   }
 
@@ -713,7 +1202,11 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
   kill (role, reason, secondary_reason, broadcast_position_offset=0) {
+=======
+  kill (role, reason, secondary_reason, broadcast_position_offset=0, circumstances=new Object()) {
+>>>>>>> LCN/master
 
     // Secondary reason is what the player sees
     // Can be used to mask death but show true
@@ -722,12 +1215,20 @@ module.exports = class {
 
     if (this.getPeriodLog() && this.getPeriodLog().trial_vote) {
       this.clearAllVotesFromAndTo(role.identifier);
+<<<<<<< HEAD
+=======
+      this.__reloadTrialVoteMessage();
+>>>>>>> LCN/master
       this.__checkLynchHammer();
     };
 
   }
 
+<<<<<<< HEAD
   silentKill (role, reason, secondary_reason, broadcast_position_offset=0) {
+=======
+  silentKill (role, reason, secondary_reason, broadcast_position_offset=0, circumstances=new Object()) {
+>>>>>>> LCN/master
 
     // Work in progress, should remove emote
     /*
@@ -739,7 +1240,11 @@ module.exports = class {
     // Secondary reason is what the player sees
     // Can be used to mask death but show true
     // reason of death to the player killed
+<<<<<<< HEAD
     this.execute("killed", {target: role.identifier});
+=======
+    this.execute("killed", {target: role.identifier, circumstances: circumstances});
+>>>>>>> LCN/master
     executable.misc.kill(this, role);
     this.primeDeathMessages(role, reason, secondary_reason, broadcast_position_offset);
 
@@ -825,8 +1330,14 @@ module.exports = class {
     var cause_of_death_config = this.config["game"]["cause-of-death"];
     var exceptions = cause_of_death_config["exceptions"];
 
+<<<<<<< HEAD
     var hide_day = (cause_of_death_config["hide-day"] && this.isDay());
     var hide_night = (cause_of_death_config["hide-night"] && !this.isDay());
+=======
+    // Inverted
+    var hide_day = (cause_of_death_config["hide-day"] && !this.isDay());
+    var hide_night = (cause_of_death_config["hide-night"] && this.isDay());
+>>>>>>> LCN/master
 
     for (var i = 0; i < unique.length; i++) {
 
@@ -848,7 +1359,11 @@ module.exports = class {
             };
           };
 
+<<<<<<< HEAD
           if (hide_day || hide_night || exempt) {
+=======
+          if (!(hide_day || hide_night) || exempt) {
+>>>>>>> LCN/master
             reasons.push(registers[j].reason);
           };
 
@@ -876,6 +1391,7 @@ module.exports = class {
 
     var display = new Array();
 
+<<<<<<< HEAD
     for (var i = 0; i < role_identifiers.length; i++) {
       var player = this.getPlayerByIdentifier(role_identifiers[i]);
 
@@ -886,6 +1402,29 @@ module.exports = class {
     };
 
     //executable.roles.uploadPublicRoleInformation(this, display);
+=======
+    if (!this.previously_uploaded_role_info) {
+      this.previously_uploaded_role_info = new Array();
+    };
+
+    for (var i = 0; i < role_identifiers.length; i++) {
+      var player = this.getPlayerByIdentifier(role_identifiers[i]);
+
+      var flavour = this.getGameFlavour();
+      var exception = this.previously_uploaded_role_info.includes(player.role_identifier) && flavour && flavour.info["do-not-repost-duplicate-cards"] === true;
+
+      if (!player.misc.role_cleaned && !exception) {
+        display.push(player);
+      };
+
+      if (!this.previously_uploaded_role_info.includes(player.role_identifier)) {
+        this.previously_uploaded_role_info.push(player.role_identifier);
+      };
+
+    };
+
+    executable.roles.uploadPublicRoleInformation(this, display);
+>>>>>>> LCN/master
 
   }
 
@@ -977,6 +1516,14 @@ module.exports = class {
     var log = this.getPeriodLog();
     var pins = log.pins;
 
+<<<<<<< HEAD
+=======
+    for (var i = 0; i < pins.length; i++) {
+      var pin = pins[i];
+      executable.misc.unpinMessage(this, pin.channel, pin.message);
+    };
+
+>>>>>>> LCN/master
   }
 
   getGuildMember (id) {
@@ -988,12 +1535,40 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
   __start () {
 
     this.state = "playing";
 
     executable.misc.postGameStart(this);
 
+=======
+  async __start () {
+
+    this.state = "playing";
+
+    for (var i = expansions.length - 1; i >= 0; i--) {
+
+      var game_start = expansions[i].scripts.game_start;
+
+      if (!game_start) {
+        continue;
+      };
+
+      await game_start(this);
+
+    };
+
+    var cache = new Array();
+    for (var i = 0; i < this.players.length; i++) {
+      cache.push(this.players[i].start());
+    };
+
+    executable.misc.postGameStart(this);
+
+    await Promise.all(cache);
+
+>>>>>>> LCN/master
     if (!this.isDay() && !this.config["game"]["town"]["night-chat"]) {
 
       executable.misc.lockMainChats(this);
@@ -1004,6 +1579,21 @@ module.exports = class {
 
     };
 
+<<<<<<< HEAD
+=======
+    for (var i = expansions.length - 1; i >= 0; i--) {
+
+      var game_secondary_start = expansions[i].scripts.game_secondary_start;
+
+      if (!game_secondary_start) {
+        continue;
+      };
+
+      await game_secondary_start(this);
+
+    };
+
+>>>>>>> LCN/master
   }
 
   __routines () {
@@ -1033,7 +1623,12 @@ module.exports = class {
       "trial_vote": null,
       "no_lynch_vote": new Array(),
       "period": this.period,
+<<<<<<< HEAD
       "pins": new Array()
+=======
+      "pins": new Array(),
+      "special_vote_types": new Array()
+>>>>>>> LCN/master
     };
 
   }
@@ -1090,6 +1685,15 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  getDiscordUser (alphabet) {
+    var id = this.getPlayerByAlphabet(alphabet);
+
+    return this.client.users.get(id);
+  }
+
+>>>>>>> LCN/master
   setPresence (presence) {
     executable.misc.updatePresence(this, presence);
   }
@@ -1119,10 +1723,86 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  save () {
+    this.timer.save(...arguments);
+  }
+
+  tentativeSave () {
+    this.timer.tentativeSave(...arguments);
+  }
+
+  async saveAsynchronously () {
+    this.save();
+  }
+
+>>>>>>> LCN/master
   format (string) {
     return executable.misc.__formatter(string);
   }
 
+<<<<<<< HEAD
+=======
+  reinstantiate (timer, players) {
+    this.timer = timer;
+    this.players = players;
+
+    if (this.game_config_override) {
+
+      this.config.game = auxils.objectOverride(this.config.game, this.game_config_override);
+
+    } else {
+
+      this.game_config_override = new Object();
+
+    };
+
+    // Check role/attribute incompatibility
+    var incompatible = new Array();
+    for (var i = 0; i < players.length; i++) {
+      incompatible = incompatible.concat(players[i].verifyProperties());
+    };
+
+    if (this.flavour_identifier && !flavours[this.flavour_identifier]) {
+      incompatible = incompatible.concat({type: "flavour", identifier: this.flavour_identifier});
+    };
+
+    if (incompatible.length > 0) {
+
+      var errors = [{type: "role", items: auxils.getUniqueArray(incompatible.filter(x => x.type === "role").map(x => x.identifier))}, {type: "attribute", items: auxils.getUniqueArray(incompatible.filter(x => x.type === "attribute").map(x => x.identifier))}, {type: "flavour", items: auxils.getUniqueArray(incompatible.filter(x => x.type === "flavour").map(x => x.identifier))}];
+
+      for (var i = 0; i < errors.length; i++) {
+
+        if (errors[i].items.length > 0) {
+          logger.log(3, "\nError loading type " + errors[i].type + ":");
+          console.table(errors[i].items);
+        };
+
+      };
+
+      logger.log(3, "\nStopped save reload due to role/attribute incompatibilities. Make sure expansions required for this save can be loaded (you can also check config/playing.json's \"expansions\" field). Restart the bot when ready. Key \"uninstantiate\" to delete saves.\n");
+
+      return false;
+    };
+
+    for (var i = 0; i < players.length; i++) {
+      players[i].reinstantiate(this);
+    };
+
+    if (this.players_tracked !== players.length) {
+      logger.log(4, "The players' save files have been removed/deleted!");
+    };
+
+    this.players_tracked = players.length;
+
+    this.actions.reinstantiate(this);
+    this.instantiateTrialVoteCollector();
+
+    return true;
+  }
+
+>>>>>>> LCN/master
   addAction () {
     // Inherits
     return this.actions.add(...arguments);
@@ -1133,6 +1813,7 @@ module.exports = class {
   }
 
   getPlayerMatch (name) {
+<<<<<<< HEAD
 
     var guild = this.client.guilds.get(this.config["server-id"]);
     var distances = new Array();
@@ -1165,6 +1846,51 @@ module.exports = class {
 
     var score = distances[best_match_index];
     var player = this.players[best_match_index];
+=======
+    // Check if name is alphabet
+
+    var player = this.getPlayerByAlphabet(name);
+
+    if (player === null) {
+
+      var guild = this.client.guilds.get(this.config["server-id"]);
+      var distances = new Array();
+
+      for (var i = 0; i < this.players.length; i++) {
+
+        var member = guild.members.get(this.players[i].id);
+
+        if (member === undefined) {
+          distances.push(-1);
+          continue;
+        };
+
+        var nickname = member.displayName;
+        var username = member.user.username;
+
+        // Calculate Levenshtein Distance
+        // Ratio'd
+
+        var s_username = auxils.hybridisedStringComparison(name.toLowerCase(), username.toLowerCase());
+        var s_nickname = auxils.hybridisedStringComparison(name.toLowerCase(), nickname.toLowerCase());
+
+        var distance = Math.max(s_username, s_nickname);
+        distances.push(distance);
+
+      };
+
+      // Compare distances
+      var best_match_index = distances.indexOf(Math.max(...distances));
+
+      var score = distances[best_match_index];
+      player = this.players[best_match_index];
+
+    } else {
+
+      var score = Infinity;
+
+    };
+>>>>>>> LCN/master
 
     return {"score": score, "player": player};
 
@@ -1232,6 +1958,7 @@ module.exports = class {
 
   endGame () {
 
+<<<<<<< HEAD
     console.log("Game ended!");
 
     // End the game
@@ -1244,6 +1971,20 @@ module.exports = class {
 
     // Remove the process
     delete process.game;
+=======
+    logger.log(2, "Game ended!");
+
+    executable.conclusion.endGame(this);
+
+    this.getMainChannel().send(this.config["messages"]["game-over"]);
+
+    this.clearTrialVoteReactions();
+
+    // End the game
+    this.state = "ended";
+
+    this.timer.updatePresence();
+>>>>>>> LCN/master
 
   }
 
@@ -1255,7 +1996,11 @@ module.exports = class {
     if (this.win_log) {
       executable.misc.postWinLog(this, this.win_log.faction, this.win_log.caption);
     } else {
+<<<<<<< HEAD
       console.warn("The win log has not been primed!");
+=======
+      logger.log(3, "The win log has not been primed!");
+>>>>>>> LCN/master
     };
   }
 
@@ -1263,6 +2008,7 @@ module.exports = class {
     this.win_log = {faction: faction, caption: caption};
   }
 
+<<<<<<< HEAD
   getNewLogChannel () {
     return this.getChannel(this.config["channels"]["log-channel"]);
   }
@@ -1277,6 +2023,22 @@ module.exports = class {
 
   getWhisperLogChannel () {
     return this.getChannel(this.config["channels"]["game-channel"]);
+=======
+  getRolesChannel () {
+    return this.getGuild().channels.find(x => x.name === this.config["channels"]["roles"]);
+  }
+
+  getLogChannel () {
+    return this.getGuild().channels.find(x => x.name === this.config["channels"]["log"]);
+  }
+
+  getMainChannel () {
+    return this.getGuild().channels.find(x => x.name === this.config["channels"]["main"]);
+  }
+
+  getWhisperLogChannel () {
+    return this.getGuild().channels.find(x => x.name === this.config["channels"]["whisper-log"]);
+>>>>>>> LCN/master
   }
 
   getPeriod () {
@@ -1302,18 +2064,33 @@ module.exports = class {
     };
   }
 
+<<<<<<< HEAD
   async createGameChannels () {
     return await executable.misc.createGameChannels(this, ...arguments);
+=======
+  async createPrivateChannel () {
+    return await executable.misc.createPrivateChannel(this, ...arguments);
+>>>>>>> LCN/master
   }
 
   postPrimeLog () {
     executable.misc.postPrimeMessage(this);
   }
 
+<<<<<<< HEAD
   substitute (id1, id2) {
 
     var player = this.getPlayerById(id1);
     player.substitute(id2);
+=======
+  postDelayNotice () {
+    executable.misc.postDelayNotice(this);
+  }
+
+  substitute (id1, id2, detailed_substitution) {
+
+    return executable.admin.substitute(this, id1, id2, detailed_substitution);
+>>>>>>> LCN/master
 
   };
 
@@ -1385,7 +2162,11 @@ module.exports = class {
     var flavour = flavours[flavour_identifier];
 
     if (!flavour) {
+<<<<<<< HEAD
       console.warn("Invalid flavour " + flavour_identifier + "! Defaulting to no flavour.");
+=======
+      logger.log(3, "Invalid flavour " + flavour_identifier + "! Defaulting to no flavour.");
+>>>>>>> LCN/master
       return null;
     };
 
@@ -1414,6 +2195,7 @@ module.exports = class {
     return this.fast_forward_votes.includes(identifier);
   }
 
+<<<<<<< HEAD
   async fastforward () {
 
     this.voting_halted = true;
@@ -1422,6 +2204,8 @@ module.exports = class {
 
   }
 
+=======
+>>>>>>> LCN/master
   checkFastForward () {
     // Wrt to the configuration
 
@@ -1513,10 +2297,34 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  getSpecialVoteCount (identifier) {
+
+    var special_vote = this.getPeriodLog().special_vote_types.find(x => x.identifier === identifier);
+
+    if (!special_vote) {
+      return null;
+    };
+
+    var count = new Number();
+    for (var i = 0; i < special_vote.voters.length; i++) {
+      count += special_vote.voters[i].magnitude;
+    };
+
+    return count;
+
+  }
+
+>>>>>>> LCN/master
   addNoLynchVote (identifier, magnitude) {
     var no_lynch_vote = this.getPeriodLog()["no_lynch_vote"];
 
     no_lynch_vote.push({identifier: identifier, magnitude: magnitude});
+<<<<<<< HEAD
+=======
+    this.execute("vote", {target: "nl", voter: identifier});
+>>>>>>> LCN/master
   }
 
   clearNoLynchVotesBy (identifier) {
@@ -1532,6 +2340,13 @@ module.exports = class {
       };
     };
 
+<<<<<<< HEAD
+=======
+    if (cleared) {
+      this.execute("unvote", {target: "nl", voter: identifier});
+    };
+
+>>>>>>> LCN/master
     return cleared;
 
   }
@@ -1574,4 +2389,42 @@ module.exports = class {
 
   }
 
+<<<<<<< HEAD
+=======
+  addIntroMessage (channel_id, message) {
+
+    this.intro_messages.push({channel_id: channel_id, message: message});
+
+  }
+
+  async postIntroMessages () {
+
+    for (var i = 0; i < this.intro_messages.length; i++) {
+
+      var channel = this.getChannelById(this.intro_messages[i].channel_id);
+      await channel.send(this.intro_messages[i].message);
+
+    };
+
+  }
+
+  setGameConfigOverride (game_config, update_immediately=true) {
+
+    this.game_config_override = auxils.objectOverride(this.game_config_override, game_config);
+
+    if (update_immediately) {
+
+      this.config.game = auxils.objectOverride(this.config.game, this.game_config_override);
+
+    };
+
+  }
+
+  getAPI () {
+
+    return lcn;
+
+  }
+
+>>>>>>> LCN/master
 };

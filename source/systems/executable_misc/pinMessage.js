@@ -11,7 +11,7 @@ module.exports = async function (message) {
       await new Promise(function(resolve, reject) {
         setTimeout(function () {
           resolve();
-        }, 200);
+        }, 400);
       });
 
       await message.pin();

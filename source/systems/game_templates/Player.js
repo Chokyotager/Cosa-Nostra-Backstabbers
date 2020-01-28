@@ -1,3 +1,5 @@
+var logger = process.logger;
+
 var actionables = require("../actionables.js");
 var attributes = require("../attributes.js");
 
@@ -23,19 +25,25 @@ module.exports = class {
     this.votes = new Array();
 
     this.channel = member.createDM();
+    this.special_channels = new Array();
+
+    this.pre_emptive = new Array();
     this.intro_messages = new Array();
 
     // 3x stats - game_stats, permanent_stats, role.stats
 
     this.status = {
       "alive": true,
+      "lynch-proof": false,
 
       "roleblocked": false,
       "controlled": false,
       "silenced": false,
       "kidnapped": false,
+      "vote-blocked": false,
 
-      "won": false
+      "won": false,
+      "can-win": true
     };
 
     this.misc = new Object();
@@ -149,6 +157,40 @@ module.exports = class {
     this.instantiateFlavour();
   }
 
+  addPreemptiveVote (identifier) {
+    this.pre_emptive.push(identifier);
+  }
+
+  clearPreemptiveVotes (runnable) {
+
+    if (typeof runnable === "function") {
+
+      for (var i = this.pre_emptive.length - 1; i >= 0; i--) {
+
+        var identifier = this.pre_emptive[i];
+
+        var player = this.game.getPlayerByIdentifier(identifier);
+
+        var outcome = runnable(player);
+
+        if (outcome === true) {
+          this.pre_emptive.splice(i, 1);
+        };
+
+      };
+
+    } else {
+
+      this.pre_emptive = new Array();
+
+    };
+
+  }
+
+  getPreemtiveVotes () {
+    return this.pre_emptive;
+  }
+
   resetTemporaryStats () {
 
     this.game_stats = {
@@ -167,6 +209,7 @@ module.exports = class {
     this.setStatus("controlled", false);
     this.setStatus("silenced", false);
     this.setStatus("kidnapped", false);
+    this.setStatus("vote-blocked", false);
 
   }
 
@@ -312,9 +355,10 @@ module.exports = class {
     if (this.role.start !== undefined) {
 
       try {
-        this.role.start(this);
+        await this.role.start(this);
       } catch (err) {
-        console.log(err);
+        logger.log(4, "Role start script error with player %s (%s) [%s]", this.identifier, this.getDisplayName(), this.role_identifier);
+        logger.logError(err);
       };
 
     };
@@ -326,10 +370,16 @@ module.exports = class {
 
       if (attribute.start) {
 
+        if (attribute.DO_NOT_RUN_ON_GAME_START === true) {
+          return null;
+        };
+
         try {
-          attribute.start(this);
+          // Define truestart synchronisation
+          await attribute.start(this, this.attributes[i], true);
         } catch (err) {
-          console.log(err);
+          logger.log(4, "Attribute start script error with player %s (%s) [%s]", this.identifier, this.getDisplayName(), this.attributes[i].identifier);
+          logger.logError(err);
         };
 
       };
@@ -404,6 +454,33 @@ module.exports = class {
     return executable.roles.getRole(this.initial_role_identifier[0]);
   }
 
+  assignChannel (channel) {
+    this.channel = {
+      id: channel.id,
+      name: channel.name,
+      created_at: channel.createdAt
+    };
+
+    this.addSpecialChannel(channel);
+
+  }
+
+  addSpecialChannel (channel) {
+    this.special_channels.push({
+      id: channel.id,
+      name: channel.name,
+      created_at: channel.createdAt
+    });
+  }
+
+  removeSpecialChannel (channel) {
+    this.special_channels = this.special_channels.filter(x => x.id !== channel);
+  }
+
+  getSpecialChannels () {
+    return this.special_channels;
+  }
+
   verifyProperties () {
 
     var incompatible = new Array();
@@ -457,6 +534,10 @@ module.exports = class {
 
     this.role = executable.roles.getRole(this.role_identifier);
 
+    if (!this.role.tags) {
+      this.role.tags = new Array();
+    };
+
   }
 
   instantiateFlavour () {
@@ -487,7 +568,7 @@ module.exports = class {
     // Count number of roles assigned before
     this.flavour_role = current[index].name;
 
-    console.log("Flavour: %s, Role: %s", this.flavour_role, this.role_identifier);
+    logger.log(1, "Flavour: %s, Role: %s", this.flavour_role, this.role_identifier);
 
   }
 
@@ -510,7 +591,7 @@ module.exports = class {
       try {
         this.executeRoutine(runnable);
       } catch (err) {
-        console.log(err);
+        logger.logError(err);
       };
 
     };
@@ -543,7 +624,7 @@ module.exports = class {
 
     } catch (err) {
 
-      console.log(err);
+      logger.logError(err);
       return null;
 
     }
@@ -556,6 +637,10 @@ module.exports = class {
 
   hasWon () {
     return this.status.won === true;
+  }
+
+  canWin () {
+    return this.status["can-win"] === true;
   }
 
   addIntroMessage (message) {
@@ -585,10 +670,16 @@ module.exports = class {
 
     if (attributes[attribute].start && this.game) {
 
+      if (attributes[attribute].DO_NOT_RUN_ON_ADDITION === true) {
+        return null;
+      };
+
       try {
-        attributes[attribute].start(this, addable);
+        // Define truestart synchronisation
+        attributes[attribute].start(this, addable, false);
       } catch (err) {
-        console.log(err);
+        logger.log(4, "Attribute start script error with player %s (%s) [%s]", this.identifier, this.getDisplayName(), addable.identifier);
+        logger.logError(err);
       };
 
     };
@@ -683,7 +774,7 @@ module.exports = class {
 
   }
 
-  getDiscordUser (alphabet) {
+  getDiscordUser () {
     return this.game.client.users.get(this.id);
   }
 

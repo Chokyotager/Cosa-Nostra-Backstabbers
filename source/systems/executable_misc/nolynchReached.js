@@ -8,7 +8,9 @@ module.exports = async function (game) {
   var config = game.config;
   var client = game.client;
 
-  var main_channel = game.getMainChannel();
+  var guild = client.guilds.get(config["server-id"]);
+
+  var main_channel = guild.channels.find(x => x.name === config["channels"]["main"]);
 
   var message = texts.nolynch_reached;
 
