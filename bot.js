@@ -2,15 +2,6 @@ var Discord = require("discord.js");
 var client = new Discord.Client();
 var fs = require("fs");
 
-process.resetStatus = async function (client) {
-
-  await client.user.setPresence({
-    status: "online",
-    game: {name: "Foxjoaquim CNB", type: "PLAYING"}
-  });
-
-};
-
 var [logger, version, lcn] = require("./source/init.js")();
 
 var config = lcn.config;
@@ -34,6 +25,8 @@ client.on("ready", function () {
   logger.log(2, "%s Cosa Nostra Backstabbers [%s] ready.", version["update-name"], version.version);
 
   var login_time = process.uptime() * 1000;
+
+  lcn.executable.reset.reset(client, config);
 
   ready();
 
@@ -73,7 +66,7 @@ client.on("message", async function (message) {
 
       for (var key in commands) {
 
-        if (["admin", "game", "role"].includes(key)) {
+        if (["admin", "game", "role", "readline"].includes(key)) {
           continue;
         };
 
@@ -101,7 +94,7 @@ client.on("message", async function (message) {
 
       if (commands.lobby[command] !== undefined) {
         // Run command
-        logger.log(0, "User %s [%s#%s] executed lobby-type command \"%s\".", member.id, member.user.username, member.user.discriminator, key, raw_command);
+        logger.log(0, "User %s [%s#%s] executed lobby-type command \"%s\".", member.id, member.user.username, member.user.discriminator, raw_command);
         commands.lobby[command](message, edited, config);
         return null;
       };
@@ -194,6 +187,15 @@ function ready () {
     process.ready = true;
 
   };
+
+};
+
+process.resetStatus = async function (client) {
+
+  await client.user.setPresence({
+    status: "online",
+    game: {name: version["update-name"] + " CNB " + version.version, type: "PLAYING"}
+  });
 
 };
 
