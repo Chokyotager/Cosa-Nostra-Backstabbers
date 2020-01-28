@@ -1,3 +1,5 @@
+// WORK IN PROGRESS
+
 var Discord = require("discord.js");
 
 module.exports = async function (game, roles) {
@@ -18,8 +20,7 @@ module.exports = async function (game, roles) {
     return null;
   };
 
-  var guild = game.client.guilds.get(config["server-id"]);
-  var roles_channel = guild.channels.find(x => x.name === config["channels"]["roles"]);
+  var roles_channel = game.getMainChannel();
 
   for (var i = 0; i < roles.length; i++) {
 

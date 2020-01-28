@@ -5,12 +5,12 @@ var attributes = require("../attributes.js");
 
 module.exports = async function (message, params, config) {
 
-  if (!process.timer || !["playing"].includes(process.timer.game.state)) {
+  if (!process.game || !["playing"].includes(process.game.state)) {
     await message.channel.send(":x: No game in progress.");
     return null;
   };
 
-  var game = process.timer.game;
+  var game = process.game;
 
   if (params.length < 2) {
     await message.channel.send(":x: Wrong syntax! Please use `" + config["command-prefix"] + "addattribute <id> <attribute> [expiry=Infinity] [tags]` instead!");

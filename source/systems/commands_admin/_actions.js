@@ -2,12 +2,12 @@ var auxils = require("../auxils.js");
 
 module.exports = async function (message, params, config) {
 
-  if (!process.timer || !["pre-game", "playing"].includes(process.timer.game.state)) {
+  if (!process.game || !["pre-game", "playing"].includes(process.game.state)) {
     await message.channel.send(":x: No game in progress.");
     return null;
   };
 
-  var actions = process.timer.game.actions.actions;
+  var actions = process.game.actions.actions;
 
   // Clone it
   actions = Array.from(actions).map((x, index) => ({action: x, used: true, index: index}));
