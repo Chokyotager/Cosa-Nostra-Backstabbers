@@ -6,7 +6,7 @@ process.resetStatus = async function (client) {
 
   await client.user.setPresence({
     status: "online",
-    game: {name: "Foxgloves Discord Mafia", type: "PLAYING"}
+    game: {name: "Foxjoaquim CNB", type: "PLAYING"}
   });
 
 };
@@ -37,21 +37,15 @@ client.on("ready", function () {
 
   ready();
 
-  process.setStatus(client);
-
-  var save_status = "NONE ATTEMPTED";
-
-  if (config["automatically-load-saves"]) {
-    save_status = autoload();
-  };
+  process.resetStatus(client);
 
   if (process.is_subprocess) {
     process.send({"ready": true});
   };
 
   var total_load_time = process.uptime() * 1000;
-  var stats = [lcn.expansions.length, lcn.expansions.map(x => x.expansion.name).join(", "), Object.keys(lcn.roles).length, Object.keys(lcn.attributes).length, Object.keys(lcn.flavours).length, Object.keys(lcn.win_conditions).length, Object.keys(lcn.commands.role).length, Object.keys(lcn.assets).length, auxils.round(load_time), auxils.round(login_time - load_time), auxils.round(total_load_time - login_time), save_status, auxils.round(total_load_time, 2)];
-  logger.log(2, "\n--- Statistics ---\n[Modules]\nLoaded %s expansion(s) [%s];\nLoaded %s role(s);\nLoaded %s attribute(s);\nLoaded %s flavour(s);\nLoaded %s unique win condition(s);\nLoaded %s command handle(s);\nLoaded %s non-flavour asset(s)\n\n[Startup]\nLoad: %sms;\nLogin: %sms;\nSave: %sms [%s];\nTotal: %sms\n-------------------\nEnter \"autosetup\" for auto-setup.\nEnter \"help\" for help.\n", ...stats);
+  var stats = [lcn.expansions.length, lcn.expansions.map(x => x.expansion.name).join(", "), Object.keys(lcn.roles).length, Object.keys(lcn.attributes).length, Object.keys(lcn.flavours).length, Object.keys(lcn.win_conditions).length, Object.keys(lcn.commands.role).length, Object.keys(lcn.assets).length, auxils.round(load_time), auxils.round(login_time - load_time), auxils.round(total_load_time, 2)];
+  logger.log(2, "\n--- Statistics ---\n[Modules]\nLoaded %s expansion(s) [%s];\nLoaded %s role(s);\nLoaded %s attribute(s);\nLoaded %s flavour(s);\nLoaded %s unique win condition(s);\nLoaded %s command handle(s);\nLoaded %s non-flavour asset(s)\n\n[Startup]\nLoad: %sms;\nLogin: %sms;\nTotal: %sms\n-------------------\nEnter \"autosetup\" for auto-setup.\nEnter \"help\" for help.\n", ...stats);
 
 });
 
@@ -67,6 +61,8 @@ client.on("message", async function (message) {
     edited.splice(0, 1);
 
     if (message.channel.type === "text") {
+
+      console.log(message);
 
       if (config["disabled-commands"].includes(command)) {
         message.channel.send(":x: That command has been disabled in the configuration!");
@@ -213,49 +209,4 @@ function ready () {
 
 };
 
-// Autoload
-function autoload () {
-  // Check for game save
-  var saved = fs.existsSync(process.directories.data + "/game_cache/game.save");
-
-  if (!saved) {
-    logger.log(2, "\x1b[1m%s\x1b[0m", "No game save found.");
-    return "\x1b[1m\x1b[34mNO SAVE FOUND\x1b[0m";
-  };
-
-  // Load the save
-  try {
-
-    var timer = game.templates.Timer.load(client, config);
-
-  } catch (err) {
-
-    logger.log(4, "Restoration of save failed due to a load error, are the save files corrupted? Use \"reset\" if necessary.");
-    logger.logError(err);
-    return "\x1b[1m\x1b[31mERRORED - CHECK LOGS\x1b[0m";
-
-  };
-
-  if (!timer) {
-    logger.log(2, "\x1b[1m%s\x1b[0m", "Did not restore save.");
-    return "\x1b[1m\x1b[31mFAILED\x1b[0m";
-  };
-
-  process.timer = timer;
-
-  logger.log(2, "\x1b[1m%s\x1b[0m", "Restored save.");
-
-  return "\x1b[1m\x1b[32mSUCCESSFUL\x1b[0m";
-
-};
-
 client.login(config["bot-token"]);
-
-process.setStatus = function (client) {
-
-  client.user.setPresence({
-    status: "online",
-    game: {name: version["update-name"] + " LCN " + version.version, type: "PLAYING"}
-  });
-
-};

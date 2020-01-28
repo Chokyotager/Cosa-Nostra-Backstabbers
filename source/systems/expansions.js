@@ -5,7 +5,7 @@ var fs = require("fs");
 
 var expansion_directories = process.directories.expansions;
 
-var expansions = getExpansions(config.playing.expansions);
+var expansions = getExpansions(config.expansions);
 
 module.exports = expansions;
 

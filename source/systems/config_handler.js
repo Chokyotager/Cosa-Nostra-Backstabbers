@@ -7,13 +7,13 @@ module.exports = function (file_dir="configuration.json", allow_parent_override=
   merge other configurations and return
   one JSON object*/
 
-  var base_config = JSON.parse(fs.readFileSync(__dirname + "/../../configs/" + file_dir));
+  var base_config = JSON.parse(fs.readFileSync(__dirname + "/../../" + file_dir));
 
-  var config_pieces = base_config["merge-configs"];
+  var config_pieces = base_config["merge-configs"] || new Array();
   var combination = new Array();
 
   for (var i = 0; i < config_pieces.length; i++) {
-    combination.push(JSON.parse(fs.readFileSync(__dirname + "/../../configs/" + config_pieces[i])));
+    combination.push(JSON.parse(fs.readFileSync(__dirname + "/../../" + config_pieces[i])));
   };
 
   if (allow_parent_override && process.parent_data) {
