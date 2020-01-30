@@ -2,6 +2,7 @@ var logger = process.logger;
 
 var fs = require("fs");
 var zlib = require("zlib");
+var request = require("request-promise");
 
 module.exports = async function (game) {
 
