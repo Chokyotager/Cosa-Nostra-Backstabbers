@@ -6,7 +6,7 @@ module.exports = async function (message, params, config) {
   var guild = message.client.guilds.find(x => x.id === config["server-id"]);
   var role = guild.roles.find(x => x.name === config["permissions"]["notify"]);
 
-  if (message.member && process.lobby && process.lobby.players.some(x => x.id === message.member.id)) {
+  if (message.member && process.lobby && process.lobby.players.some(x => x.id === message.member.id) && params.length === 0) {
 
     // Notify
     var online_members = guild.members.filter(x => x.id !== message.member.id && x.roles.some(y => y.id === role.id) && x.user.presence.status !== "offline").array();

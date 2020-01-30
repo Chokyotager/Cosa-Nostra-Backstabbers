@@ -4,6 +4,6 @@ module.exports = function (player) {
 
   var main = game.getMainChannel();
 
-  game.addIntroMessage(main.id, ":exclamation: **" + player.getDisplayName() + "** has been revealed to be a __Town Innocent Child__!");
+  game.addIntroMessage(main.id, ":exclamation: **" + player.getDisplayName() + "** has been revealed to be an __Innocent Child__!");
 
 };

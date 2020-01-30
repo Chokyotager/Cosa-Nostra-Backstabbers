@@ -1122,6 +1122,8 @@ module.exports = class {
 
     };
 
+    await this.postIntroMessages();
+
     var cache = new Array();
     for (var i = 0; i < this.players.length; i++) {
       cache.push(this.players[i].start());
@@ -1409,6 +1411,10 @@ module.exports = class {
     executable.conclusion.openChats(this);
 
     process.resetStatus(this.client);
+
+    if (this.config["miscellaneous"]["archive-games"]) {
+      executable.misc.archiveGame(this);
+    };
 
     // Remove the process
     delete process.game;

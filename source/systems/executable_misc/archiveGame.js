@@ -1,11 +1,38 @@
+var logger = process.logger;
+
 var fs = require("fs");
+var zlib = require("zlib");
 
 module.exports = async function (game) {
 
+  var config = game.config;
+  var client = game.client;
+  var guild = game.getGuild();
+
+  var truncate_time = 0;
+
+  var archive_directory = __dirname + "/../../../saves/";
+
   // Serialise channel and save
-  if (!fs.existsSync(__dirname + "/../../../saves")) {
-    fs.mkdirSync(__dirname + "/../../../saves");
+  if (!fs.existsSync(archive_directory)) {
+    fs.mkdirSync(archive_directory);
   };
+
+  var archive_time = new Date();
+
+  var game_category = guild.channels.find(x => x.name === config["channels"]["category"]);
+
+  var output = await serialise([game_category.id]);
+
+  var save_directory = archive_directory + output.serialised + ".dsave";
+
+  var savable = JSON.stringify(output);
+  savable = zlib.deflateSync(savable);
+
+  fs.writeFileSync(save_directory, savable);
+  var file_size = fs.statSync(save_directory).size / 100000;
+
+  logger.log(2, "[Archiver] Saved file to %s [%s MB]", save_directory, file_size);
 
   async function serialise (channel_ids=new Array()) {
 
@@ -14,7 +41,8 @@ module.exports = async function (game) {
       channels: new Array(),
       users: new Array(),
       categories: new Array(),
-      guilds: new Array()
+      guilds: new Array(),
+      serialised: archive_time.valueOf()
     };
 
     // {guild, channels: [], users: []}
@@ -46,7 +74,6 @@ module.exports = async function (game) {
 
       // Log
       console.log("\x1b[1mSerialising %s/%s channels.\x1b[0m", i + 1, channels.length);
-      await status_message.edit(":hourglass_flowing_sand: Archiving the channels into a file. Please be patient. [**" + (i + 1) + "/" + channels.length + "**]");
       var output = await serialiseChannel(channel);
 
       returnable.channels.push({

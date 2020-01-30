@@ -1,6 +1,7 @@
 var auxils = require("../auxils.js");
 var role_info = require("../roles.js");
 var win_conditions = require("../win_conditions.js");
+var flavours = require("../flavours.js");
 
 var Discord = require("discord.js");
 
@@ -26,7 +27,26 @@ for (var key in role_info) {
 
 module.exports = async function (message, params, config) {
 
-  var default_flavour = config["playing"]["flavour"];
+  // Temporary
+  var default_flavour = null;
+
+  if (process.lobby) {
+    var players = game.lobby.players.length;
+    var output = game.lobby.setup.evaluateRange(players, players);
+
+    var parameters = output[players.toString()].parameters;
+
+    if (parameters && parameters.playing) {
+      default_flavour = parameters.playing.flavour;
+    };
+
+  };
+
+  if (process.game) {
+
+    var default_flavour = process.game.flavour_identifier;
+
+  };
 
   if (!default_flavour) {
 
