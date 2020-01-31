@@ -455,6 +455,9 @@ module.exports = class {
     // this.config.time.day
     this.voting_halted = true;
 
+    // Clear fast forward votes
+    this.fast_forward_votes = new Array();
+
     var addition = this.state === "pre-game" ? 0 : 1;
 
     if (adjust_to_current_time) {
@@ -1164,9 +1167,6 @@ module.exports = class {
     // only administrative junk
 
     var trials = Math.max(this.config["game"]["minimum-trials"], Math.ceil(this.config["game"]["lynch-ratio-floored"] * this.getAlive()));
-
-    // Clear fast forward votes
-    this.fast_forward_votes = new Array();
 
     for (var i = 0; i < this.trial_vote_operations.length; i++) {
       var operation = this.trial_vote_operations[i].operation;
