@@ -1127,14 +1127,14 @@ module.exports = class {
 
     await this.postIntroMessages();
 
-    var cache = new Array();
+    /*var cache = new Array();
     for (var i = 0; i < this.players.length; i++) {
       cache.push(this.players[i].start());
-    };
+    };*/
 
     executable.misc.postGameStart(this);
 
-    await Promise.all(cache);
+    //await Promise.all(cache);
 
     if (!this.isDay() && !this.config["game"]["town"]["night-chat"]) {
 
