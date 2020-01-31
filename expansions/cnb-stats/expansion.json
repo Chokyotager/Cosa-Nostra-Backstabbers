@@ -1,0 +1,25 @@
+{
+
+  "name": "CNB Stats",
+  "type": "Miscellaneous",
+  "description": "Adds miscellaneous game tracking and role awards.",
+
+  "link": null,
+
+  "authors": ["ChocoParrot"],
+
+  "overrides": {
+
+    "flavours": [],
+
+    "role_win_conditions": [],
+
+    "roles": [],
+
+    "attributes": []
+
+  },
+
+  "dependencies": []
+
+}

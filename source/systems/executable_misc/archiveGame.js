@@ -12,7 +12,7 @@ module.exports = async function (game) {
 
   var truncate_time = 0;
 
-  var archive_directory = __dirname + "/../../../saves/";
+  var archive_directory = process.directories.data + "/saves/";
 
   // Serialise channel and save
   if (!fs.existsSync(archive_directory)) {

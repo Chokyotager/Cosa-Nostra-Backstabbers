@@ -11,6 +11,10 @@ module.exports = function () {
     "expansions": [__dirname + "/../expansions/"]
   };
 
+  if (!fs.existsSync(process.directories.data)) {
+    fs.mkdirSync(process.directories.data);
+  };
+
   // Subprocess handler (for NPM Foxorchid LCN)
   if (primitive_config["allow-config-override-subprocess"]) {
 

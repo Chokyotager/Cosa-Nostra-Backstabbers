@@ -2,7 +2,7 @@
   "name": "cosa-nostra-backstabbers",
   "description": "Turbo Mafia bot based off LCN",
   "update-name": "Foxjoaquim",
-  "version": "4.1.5b",
+  "version": "4.1.6b",
   "main": "bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
