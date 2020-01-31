@@ -9,7 +9,7 @@ module.exports = async function (message, params, config) {
   if (message.member && process.lobby && process.lobby.players.some(x => x.id === message.member.id) && params.length === 0) {
 
     // Notify
-    var online_members = guild.members.filter(x => x.id !== message.member.id && x.roles.some(y => y.id === role.id) && x.user.presence.status !== "offline").array();
+    var online_members = guild.members.filter(x => x.id !== message.member.id && x.roles.some(y => y.id === role.id) && x.user.presence.status !== "offline" && !process.lobby.players.some(y => y.id === x.id)).array();
     var pings = online_members.length > 0 ? auxils.pettyFormat(online_members.map(x => "<@" + x.id + ">")) : "nobody :(";
     await message.channel.send(":exclamation: **" + message.member.displayName + "** is pinging: " + pings);
     return null;

@@ -8,7 +8,7 @@ module.exports = function (game) {
 
     game.primeWinLog("stalemate", "Nobody wins.");
     return true;
-    
+
   };
 
   return false;
