@@ -1,9 +1,11 @@
 {
 
-  "alpha-role": {
+  "award-roles": {
     "enabled": true,
-    "give-to": 5,
-    "role": "Alpha Gamer"
+    "roles": [
+      {"role": "Alpha", "give-to": 5},
+      {"role": "Beta", "give-to": 15}
+    ]
   }
 
 }

@@ -43,45 +43,51 @@ module.exports = function (game) {
 
   fs.writeFileSync(stats_directory, stats.map(x => x.join("\t")).join("\n"));
 
-  if (stats_config["alpha-role"]["enabled"]) {
+  if (stats_config["award-roles"]["enabled"]) {
 
-    var role = guild.roles.find(x => x.name === stats_config["alpha-role"]["role"]);
+    for (i = 0; i < stats_config["award-roles"]["roles"].length; i++) {
 
-    stats.sort(function (a, b) {
-      return b[2] - a[2];
-    });
+      var gift_role = stats_config["award-roles"]["roles"][i];
 
-    var gifted = new Array();
+      var role = guild.roles.find(x => x.name === gift_role["role"]);
 
-    for (var i = 0; i < stats.length; i++) {
+      stats.sort(function (a, b) {
+        return b[2] - a[2];
+      });
 
-      if (gifted.length >= stats_config["alpha-role"]["give-to"]) {
-        break;
-      };
+      var gifted = new Array();
 
-      var member = guild.members.find(x => x.id === stats[i][0]);
+      for (var j = 0; j < stats.length; j++) {
 
-      if (!member) {
-        continue;
-      };
+        if (gifted.length >= gift_role["give-to"]) {
+          break;
+        };
 
-      // Give role
-      if (member.roles.find(x => x.id === role.id)) {
+        var member = guild.members.find(x => x.id === stats[j][0]);
+
+        if (!member) {
+          continue;
+        };
+
+        // Give role
+        if (member.roles.find(x => x.id === role.id)) {
+          gifted.push(member.id);
+          continue;
+        };
+
+        // Assign role
+        member.addRole(role);
         gifted.push(member.id);
-        continue;
+
       };
 
-      // Assign role
-      member.addRole(role);
-      gifted.push(member.id);
+      // Remove roles from all that previously have it
+      var remove_from = guild.members.filter(x => !gifted.includes(x.id) && x.roles.some(y => y.id === role.id)).array();
+      for (var j = 0; j < remove_from.length; j++) {
 
-    };
+        remove_from[j].removeRole(role);
 
-    // Remove roles from all that previously have it
-    var remove_from = guild.members.filter(x => !gifted.includes(x.id) && x.roles.some(y => y.id === role.id)).array();
-    for (var i = 0; i < remove_from.length; i++) {
-
-      remove_from[i].removeRole(role);
+      };
 
     };
 
