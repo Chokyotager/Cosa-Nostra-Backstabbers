@@ -9,13 +9,15 @@ module.exports = async function (game, channel_name, permissions, id_name=null) 
   // Default permissions
   //var default_cnb_permissions = {allow: ["VIEW_CHANNELS", "READ_MESSAGES"], deny: ["SEND_MESSAGES", "ADD_REACTIONS"], id: game.getGuild().id};
 
+  permissions = permissions || new Array();
+
   // Old permission overwrite
   for (var i = 0; i < permissions.length; i++) {
     if (!permissions[i].target) {
       continue;
     };
 
-    permissions[i].id = permissions[i].id;
+    permissions[i].id = permissions[i].target;
 
     // Enumerate permission
     var enumeration = auxils.permsToArray(permissions[i]);
@@ -26,11 +28,7 @@ module.exports = async function (game, channel_name, permissions, id_name=null) 
 
   var default_cnb_permissions = [{id: guild.id, deny: ["READ_MESSAGES", "SEND_MESSAGES", "ADD_REACTIONS"]}];
 
-  if (!permissions) {
-    permissions = default_cnb_permissions;
-  } else {
-    permissions = default_cnb_permissions.concat(permissions);
-  };
+  permissions = default_cnb_permissions.concat(permissions);
 
   var lobby_category = guild.channels.find(x => x.name === config["channels"]["category"]);
 
