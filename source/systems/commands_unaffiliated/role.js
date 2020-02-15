@@ -31,8 +31,8 @@ module.exports = async function (message, params, config) {
   var default_flavour = null;
 
   if (process.lobby) {
-    var players = game.lobby.players.length;
-    var output = game.lobby.setup.evaluateRange(players, players);
+    var players = process.lobby.players.length;
+    var output = process.lobby.setup.evaluateRange(players, players);
 
     var parameters = output[players.toString()].parameters;
 
