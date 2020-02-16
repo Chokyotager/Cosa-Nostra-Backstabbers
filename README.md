@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://github.com/Chokyotager/Cosa-Nostra-Backstabbers"><img src="/display/CNB_main_banner" alt="banner" /></a>
+    <a href="https://github.com/Chokyotager/Cosa-Nostra-Backstabbers"><img src="/display/CNB_main_banner.png" alt="banner" /></a>
   </p>
   <br />
   <p>
