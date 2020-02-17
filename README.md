@@ -14,7 +14,7 @@
 
 
 ## Installation and configuration using NPM
-1. Install the CNB package using `npm install la-cosa-nostra`.
+1. Install the CNB package using `npm install cosa-nostra-backstabbers`.
 2. Create a bot-token and a Discord bot (guide [here](https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token)).
 3. Add your bot to the server using this link: `https://discordapp.com/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=8` - swap the `CLIENT_ID` out for the ID of your bot.
 4. Copy and paste this code below into a script file in a directory (i.e. `cnb/run.js`):
