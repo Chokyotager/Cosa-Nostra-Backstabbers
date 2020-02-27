@@ -37,7 +37,7 @@ module.exports = async function (message, params, config) {
     var setup = new Setup();
     var best_match = setup.getSetupMatch(params[1].toLowerCase());
 
-    if (best_match.score < 0.7) {
+    if (best_match.score < 0.6) {
       await message.channel.send(":x: I cannot find that setup!");
       return null;
     };
