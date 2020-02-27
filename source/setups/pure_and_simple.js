@@ -20,7 +20,7 @@ module.exports = function (players) {
 
 };
 
-module.exports.NAME = "Pure and Simple!";
+module.exports.NAME = "Pure and Simple";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "A game with a confirmed townie at the very start.";
 module.exports.AUTHORS = ["SpikedJackson", "Jared"];
