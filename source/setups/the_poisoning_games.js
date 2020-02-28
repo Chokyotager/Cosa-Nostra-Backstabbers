@@ -1,13 +1,13 @@
 var roles = {
-  "3": ["vanilla_townie", "vanilla_townie", "toxicologist"],
-  "4": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "toxicologist"],
-  "5": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "sentinel_doctor", "toxicologist"],
-  "6": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "2-shot_doctor", "toxicologist", "toxicologist"],
-  "7": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "2-shot_doctor", "apothecarist", "toxicologist", "toxicologist"],
-  "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "2-shot_doctor", "apothecarist", "toxicologist", "toxicologist"],
+  "3": ["apothecarist", "doctor", "toxicologist"],
+  "4": ["vanilla_townie", "vanilla_townie", "apothecarist", "toxicologist"],
+  "5": ["vanilla_townie", "apothecarist", "sentinel_doctor", "toxicologist", "toxicologist"],
+  "6": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "toxicologist", "toxicologist"],
+  "7": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "apothecarist", "toxicologist", "toxicologist"],
+  "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "apothecarist", "toxicologist", "toxicologist"],
   "9": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "apothecarist", "toxicologist", "toxicologist", "janitor"],
   "10": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "apothecarist", "toxicologist", "toxicologist", "consort"],
-  "11": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "2-shot_doctor", "doctor", "apothecarist", "toxicologist", "toxicologist", "toxicologist"],
+  "11": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "doctor", "apothecarist", "toxicologist", "toxicologist", "toxicologist"],
   "12": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "doctor", "doctor", "apothecarist", "toxicologist", "toxicologist", "toxicologist", "consort"]
 };
 
