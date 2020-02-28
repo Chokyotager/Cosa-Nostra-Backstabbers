@@ -30,7 +30,7 @@ module.exports = class {
     // Jaro-Winkler hybrid
     for (var i = 0; i < identifiers.length; i++) {
 
-      var distance = auxils.hybridisedStringComparison(name, identifiers[i].NAME);
+      var distance = auxils.hybridisedStringComparison(name, setups[identifiers[i]].NAME);
       distances.push(distance);
 
     };
