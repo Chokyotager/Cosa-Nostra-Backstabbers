@@ -31,7 +31,10 @@ module.exports = async function (message, params, config) {
   var default_flavour = null;
 
   if (process.lobby) {
-    var players = process.lobby.players.length;
+
+    var player_limits = process.lobby.setup.setup.PLAYER_LIMITS;
+
+    var players = Math.max(Math.min(process.lobby.players.length, player_limits[1]), player_limits[0]);
     var output = process.lobby.setup.evaluateRange(players, players);
 
     var parameters = output[players.toString()].parameters;

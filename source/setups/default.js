@@ -5,7 +5,7 @@ var roles = {
   "6": ["vanilla_townie", "vanilla_townie", "sheriff", "jailkeeper", "caporegime", "mafioso"],
   "7": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "oracle", "consort", "mafioso"],
   "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "mafioso"],
-  "9" :["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "1-Shot_strongman"],
+  "9" :["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "consort", "one_shot_strongman"],
   "10": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "escort", "consort", "mafioso", "serial_killer"],
   "11": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "escort", "consort", "mafioso", "serial_killer"],
   "12": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "vanilla_townie", "sheriff", "doctor", "escort", "consort","one_shot_Strongman", "serial_killer"],

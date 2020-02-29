@@ -36,6 +36,12 @@ module.exports = async function (message, params, config) {
 
       await message.channel.send(":exclamation: **" + message.member.displayName + "** has left the lobby. **" + process.lobby.players.length + "** player" + auxils.vocab("s", process.lobby.players.length) + " remain" + auxils.vocab("!s", process.lobby.players.length) + "." + addendum);
 
+      if (process.lobby.players.length === 0) {
+
+        process.lobby.destroy();
+
+      };
+
     } else {
 
       await message.channel.send(":x: You cannot leave a game you are not in!");
@@ -45,12 +51,6 @@ module.exports = async function (message, params, config) {
   } else {
 
     await message.channel.send(":x: You cannot leave a game you are not in!");
-
-  };
-
-  if (process.lobby.players.length === 0) {
-
-    process.lobby.destroy();
 
   };
 
