@@ -113,7 +113,6 @@ venv.bak/
 data/
 *.save
 
-configuration.json
 self/
 
 log.txt

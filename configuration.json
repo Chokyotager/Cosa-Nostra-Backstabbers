@@ -1,0 +1,40 @@
+{
+
+  "bot-token": null,
+  "server-id": null,
+
+  "command-prefix": "!",
+  "console-log-level": 1,
+  "file-log-level": 3,
+  "allow-config-override-subprocess": true,
+
+  "send-role-banners": false,
+
+  "channels": {
+    "category": "Game",
+
+    "lobby": "lobby",
+
+    "game-channel": "town-hall",
+    "log-channel": "log"
+  },
+
+  "permissions": {
+    "admin": "Acting Host",
+    "player": "Player",
+    "notify": "Notify"
+  },
+
+  "miscellaneous": {
+    "lock-lobby-to-all": true,
+    "tick-time": 100,
+    "archive-games": true
+  },
+
+  "timeout": 20,
+
+  "disabled-commands": [],
+
+  "expansions": ["lcn-expansion-1", "lcn-expansion-2"]
+
+}
