@@ -2,14 +2,14 @@
   "name": "cosa-nostra-backstabbers",
   "description": "Turbo Mafia bot based off LCN",
   "update-name": "Foxjoaquim",
-  "version": "4.1.6b",
-  "main": "bot.js",
+  "version": "4.1.8b",
+  "main": "foxorchid/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Chokyotager/La-Cosa-Nostra"
+    "url": "https://github.com/Chokyotager/Cosa-Nostra-Backstabbers"
   },
   "keywords": [
     "Mafia",
@@ -20,7 +20,7 @@
     "Fun"
   ],
   "author": "ChocoParrot",
-  "license": "MIT",
+  "license": "https://github.com/Chokyotager/Cosa-Nostra-Backstabbers/blob/master/LICENSE",
   "bugs": {
     "url": "https://github.com/Chokyotager/Cosa-Nostra-Backstabbers/issues"
   },
