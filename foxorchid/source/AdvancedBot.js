@@ -44,7 +44,7 @@ module.exports = class extends EventEmitter {
         throw err;
       };
 
-      console.log("LCN child process stopped [PID %s].", wrapper.child_process.pid);
+      console.log("CNB child process stopped [PID %s].", wrapper.child_process.pid);
 
     }, this.stdio_options);
 
@@ -75,7 +75,7 @@ module.exports = class extends EventEmitter {
 
     });
 
-    console.log("Initiated LCN child process [PID %s].", this.child_process.pid);
+    console.log("Initiated CNB child process [PID %s].", this.child_process.pid);
 
     return this;
 
