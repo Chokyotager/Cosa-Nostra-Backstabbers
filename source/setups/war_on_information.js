@@ -25,4 +25,4 @@ module.exports.NAME = "War on Information";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "A game that's highly satirical on its own.";
 module.exports.AUTHORS = ["ShapeShifted"];
-module.exports.PLAYER_LIMITS = [1, 13];
+module.exports.PLAYER_LIMITS = [3, 13];
