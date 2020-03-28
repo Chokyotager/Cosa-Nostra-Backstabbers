@@ -20,4 +20,4 @@ module.exports.NAME = "Dayshootin'";
 module.exports.VARIABLE_SETUP = false;
 module.exports.INFO = "When everyone is a shooter.";
 module.exports.AUTHORS = ["VoidMist", "Jared"];
-module.exports.PLAYER_LIMITS = [4, 8];
+module.exports.PLAYER_LIMITS = [3, 8];
