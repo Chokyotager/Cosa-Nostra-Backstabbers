@@ -11,9 +11,9 @@ var text = {
 module.exports = function (actionable, game, params) {
 
   // Generate context
-  var difficulty = Math.round(Math.random() * 7) + 5;
+  var difficulty = Math.round(Math.random() * 7) + 2;
 
-  var fulfil = Math.min(Math.floor((12 - difficulty) / 2) + 2, difficulty);
+  var fulfil = Math.min(Math.floor((12 - difficulty) / 3) + 2, difficulty);
 
   if (fulfil > 3) {
 
