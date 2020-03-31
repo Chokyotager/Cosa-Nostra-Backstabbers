@@ -2,7 +2,7 @@ var roles = {
    "3": ["vanilla_townie", "mafioso", "one_shot_dayshooter"],
    "4": ["one_shot_dayshooter", "serial_killer", "one_shot_dayshooter", "mafioso"],
    "5": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso", "traitor"],
-   "6": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso", "godfather", "vanilla_townier"],
+   "6": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "mafioso", "godfather", "vanilla_townie"],
    "7": ["vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "one_shot_dayshooter", "mafioso", "godfather", "vanilla_townie"],
    "8": ["vanilla_townie", "vanilla_townie", "vanilla_townie", "one_shot_dayshooter", "one_shot_dayshooter", "mafioso", "godfather", "vanilla_townie"]
 };
