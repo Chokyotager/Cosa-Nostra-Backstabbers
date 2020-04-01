@@ -22,7 +22,7 @@ module.exports = async function (message, params, config) {
 
     // Determine game
     var setup_name = setup.setup.NAME;
-    var sample_text = setup.setup.VARIABLE ? " (sample) " : new String();
+    var sample_text = setup.setup.VARIABLE_SETUP ? " (sample) " : new String();
 
     if (params.length > 1) {
 
@@ -58,7 +58,7 @@ module.exports = async function (message, params, config) {
 
     // Determine game
     var setup_name = setup.setup.NAME;
-    var sample_text = setup.setup.VARIABLE ? " (sample) " : new String();
+    var sample_text = setup.setup.VARIABLE_SETUP ? " (sample) " : new String();
 
     // Redefine config
     var config = game.config;
@@ -76,7 +76,7 @@ module.exports = async function (message, params, config) {
     // Determine game
     var setup = process.lobby.setup;
     var setup_name = setup.setup.NAME;
-    var sample_text = setup.setup.VARIABLE ? " (sample) " : new String();
+    var sample_text = setup.setup.VARIABLE_SETUP ? " (sample) " : new String();
     var output = setup.evaluateRange();
 
     await message.channel.send(":clipboard: Role list for gamemode **" + setup_name + "**" + sample_text + ":\n```ini\n" + evaluateRolelist(output) + "```");
