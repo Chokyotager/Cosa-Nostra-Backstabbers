@@ -17,7 +17,9 @@ module.exports = function (game) {
   };
 
   for (var i = 0; i < stats.length; i++) {
-    stats[i][2] = parseInt(stats[i][2]);
+    stats[i][2] = parseFloat(stats[i][2]);
+    // Calculate decay
+    stats[i][2] *= stats_config["decay"];
   };
 
   // Check players
@@ -30,7 +32,7 @@ module.exports = function (game) {
     for (var j = 0; j < stats.length; j++) {
 
       if (stats[j][0] === member.id) {
-          stats[j][2]++;
+          stats[j][2] += players.length / 3;
           continue player_loop;
       };
 

@@ -6,6 +6,8 @@ module.exports = function (game) {
 
   var win_conditions = new Array();
 
+  win_conditions.push("stalemate");
+
   for (var i = 0; i < game.players.length; i++) {
 
     if (win_conditions.includes(game.players[i].role["win-condition"].toLowerCase())) {

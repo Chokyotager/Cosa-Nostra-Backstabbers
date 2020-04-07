@@ -1,7 +1,7 @@
 var roles = {
   "3": ["caporegime", "jailkeeper", "vanilla_townie"],
-  "4": ["jack_of_all_trades", "jailkeeper", "vanilla_townie", "vanilla_townie"],
-  "5": ["jack_of_all_trades", "marshal", "veteran", "vanilla_townie", "vanilla_townie"],
+  "4": ["pestilence", "jailkeeper", "vanilla_townie", "vanilla_townie"],
+  "5": ["pestilence", "marshal", "veteran", "vanilla_townie", "vanilla_townie"],
   "6": ["caporegime", "one_shot_strongman", "one_shot_dayshooter", "marksman", "vanilla_townie", "vanilla_townie"],
   "7": ["caporegime", "lawyer", "sheriff", "deputy", "one_shot_dayshooter", "vanilla_townie", "vanilla_townie"],
   "8": ["caporegime", "one_shot_strongman", "jack_of_all_trades", "vigilante", "jailkeeper", "vagrant", "vanilla_townie", "vanilla_townie"],
